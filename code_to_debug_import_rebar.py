@@ -108,12 +108,49 @@ FreeCAD.ActiveDocument.recompute()
 # ifc import other debug code ********************************************************************
 # ************************************************************************************************
 
+# ************************************************************************************************
 # TODO better path implementation
 import os, rebar2
 path_to_rebar2 = rebar2.__file__.rstrip(os.path.basename(rebar2.__file__))
 print(path_to_rebar2)
 
 
+# ************************************************************************************************
+# length scale unit
+import os, rebar2, ifcopenshell
+path_to_rebar2 = rebar2.__file__.rstrip(os.path.basename(rebar2.__file__))
+
+ifcfile = path_to_rebar2 + "example_01_two_stirrups.ifc"  # imports :-)
+# ifcfile = path_to_rebar2 + "example_03_crane_foundation.ifc"
+
+f = ifcopenshell.open(ifcfile)
+f.by_type('IfcProject')
+prj_units = f.by_type('IfcProject')[0].UnitsInContext.Units
+scale_length = 1.0
+found_length_unit = False
+for u in prj_units:
+    if u.UnitType == "LENGTHUNIT":
+        if found_length_unit is False:
+            found_length_unit = True
+            # print(u.Prefix)
+            # print(u.Name)
+            if u.Prefix == "MILLI" and u.Name == "METRE":
+                scale_length = 1.0
+            elif u.Prefix is None and u.Name == "METRE":
+                scale_length = 0.001
+            else:
+                print("Not known length unit found, set attibute length scale to 1.0")
+                print(u)
+                scale_length = 1.0
+        else:
+            print("Two LENGTHUNIT defined, this is not allowed in IFC-Standard.")
+
+print(scale_length)
+
+
+
+
+# ************************************************************************************************
 import ifcopenshell, os, Part
 
 # from importIFC

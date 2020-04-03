@@ -208,10 +208,10 @@ importIFC.open(path_to_rebar2 + "example_01_two_stirrups.ifc")
 # rebar importer which usees rebar2
 import os, rebar2, importIFCrebar
 path_to_rebar2 = rebar2.__file__.rstrip(os.path.basename(rebar2.__file__))
-importIFCrebar.open(path_to_rebar2 + "example_01_two_stirrups.ifc")  # imports :-)
-# importIFCrebar.open(path_to_rebar2 + "example_02_channel_foundation.ifc")  # imports :-)
-# importIFCrebar.open(path_to_rebar2 + "example_03_crane_foundation.ifc")  # does import crap, was exported with old Allplan exporter
-# importIFCrebar.open(path_to_rebar2 + "example_04_vat.ifc")  # imports :-)
+importIFCrebar.open(path_to_rebar2 + "example_01_two_stirrups.ifc")
+# importIFCrebar.open(path_to_rebar2 + "example_02_channel_foundation.ifc")
+# importIFCrebar.open(path_to_rebar2 + "example_03_crane_foundation.ifc")
+# importIFCrebar.open(path_to_rebar2 + "example_04_vat.ifc")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -219,6 +219,6 @@ FreeCAD.ActiveDocument.recompute()
 import importIFCrebar
 import importlib
 importlib.reload(importIFCrebar)
-importIFCrebar.open(path_to_rebar2 + "example_01_two_stirrups.ifc")  # imports :-)
+importIFCrebar.open(path_to_rebar2 + "example_01_two_stirrups.ifc")
 FreeCAD.ActiveDocument.recompute()
 

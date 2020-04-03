@@ -128,6 +128,33 @@ def insert(filename, docname, skip=[], only=[], root=None):
     rebars = ifcfile.by_type("IfcReinforcingBar")
     rebar_objs = []
 
+    prj_units = ifcfile.by_type("IfcProject")[0].UnitsInContext.Units
+    length_scale = 1.0
+    found_length_unit = False
+    for u in prj_units:
+        if u.UnitType == "LENGTHUNIT":
+            if found_length_unit is False:
+                found_length_unit = True
+                # print(u.Prefix)
+                # print(u.Name)
+                if u.Prefix == "MILLI" and u.Name == "METRE":
+                    length_scale = 1.0
+                elif u.Prefix is None and u.Name == "METRE":
+                    length_scale = 1000  # convert meter into mille meter
+                else:
+                    print(
+                        "Not known length unit found, "
+                        "set attibute length scale to 1.0"
+                    )
+                    print(u)
+                    length_scale = 1.0
+            else:
+                print(
+                    "Two LENGTHUNIT defined, "
+                    "this is not allowed in IFC-Standard."
+                )
+    print("Length scale = {}\n".format(length_scale))
+
     # TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # might be a distribution is only the first distribution
     # of many distributions of the mark
@@ -199,7 +226,8 @@ def insert(filename, docname, skip=[], only=[], root=None):
         item_ifc_shape_representation = ifc_shape_representation.Items[0]
         mapping_source = item_ifc_shape_representation.MappingSource
         ifc_swept_disk_solid = mapping_source.MappedRepresentation.Items[0]
-        radius = ifc_swept_disk_solid.Radius
+        radius = ifc_swept_disk_solid.Radius * length_scale
+        # print(radius)
         entity_polyline = ifc_swept_disk_solid.Directrix
 
         # sweep path
@@ -227,7 +255,11 @@ def insert(filename, docname, skip=[], only=[], root=None):
         for ifc_mapped_item in ifc_shape_representation.Items:
             ifc_cartesian_point = ifc_mapped_item.MappingTarget.LocalOrigin
             coord = ifc_cartesian_point.Coordinates
-            co_vec = vec(coord[0], coord[1], coord[2])
+            co_vec = vec(
+                coord[0] * length_scale,
+                coord[1] * length_scale,
+                coord[2] * length_scale
+            )
             vec_pls.append(co_vec)
         # print("\n{}".format(vec_pls))
 
@@ -256,11 +288,12 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 is_linear_distribution = True
 
         # get placement for first distribution bar
-        coord_firstbar = rebar.ObjectPlacement.RelativePlacement.Location.Coordinates
+        relplacement_firstbar = rebar.ObjectPlacement.RelativePlacement
+        coord_firstbar = relplacement_firstbar.Location.Coordinates
         vec_firstbar = vec(
-            coord_firstbar[0],
-            coord_firstbar[1],
-            coord_firstbar[2]
+            coord_firstbar[0] * length_scale,
+            coord_firstbar[1] * length_scale,
+            coord_firstbar[2] * length_scale
         )
         firstbar_pl = FreeCAD.Placement(
             vec_firstbar,
@@ -338,7 +371,6 @@ def insert(filename, docname, skip=[], only=[], root=None):
         rebar_shape.Placement = firstbar_pl
 
         # all_entities_group.addObject(rebar_shape)
-
         print("")
     FreeCAD.ActiveDocument.recompute()
     # End rebars loop
