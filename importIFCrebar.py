@@ -127,7 +127,12 @@ def insert(filename, docname, skip=[], only=[], root=None):
 
     rebars = ifcfile.by_type("IfcReinforcingBar")
     rebar_objs = []
+    base_rebars = {}  # {rebar_mark_number : rebar_obj}
+    distribution_counter = 1
 
+    # get the length scale facter because of  unit of the ifc file
+    # new Allplan exporter uses milli meter
+    # old Allplan exporter uses meter
     prj_units = ifcfile.by_type("IfcProject")[0].UnitsInContext.Units
     length_scale = 1.0
     found_length_unit = False
@@ -154,25 +159,6 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     "this is not allowed in IFC-Standard."
                 )
     print("Length scale = {}\n".format(length_scale))
-
-    # TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # might be a distribution is only the first distribution
-    # of many distributions of the mark
-    # the attributes should be read to get the MarkNumber
-    # equal MarkNumber should get the same
-    # base goemetry as rebar shape
-    # means these distributions should share a base rebar shape
-    #
-    # PROBLEM: the placement needs to be checked,
-    # because the base rebar could be the same for
-    # different distributions, but not the place in the orbit
-    # than in distribution the placement needs to be
-    # moved and turned global
-    # see bsp example_04_vat.ifc
-    #
-    # Thus ATM any distribution gets his own rebar base shape
-    # create groups for any rebar base shape (mark number)
-    mark_numbers = []
 
     # rebars
     for pno, rebar in enumerate(rebars):
@@ -203,7 +189,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
         # print(psets)
         # build dict of properties
         ifc_properties = {}
-        ifc_mark_number = 0
+        rebar_mark_number = 0
         ifc_properties = getIfcProperties(ifcfile, pid, psets, ifc_properties)
         # print(ifc_properties)
         # get the mark number (Position number)
@@ -216,10 +202,13 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 pset == "Allplan_ReinforcingBar"
                 and pname == "Position number"
             ):  # need to be Position here!
-                ifc_mark_number = pvalue
-        # print(ifc_mark_number)
+                rebar_mark_number = pvalue
+        # print(rebar_mark_number)
         # print("")
-        mark_numbers.append(ifc_mark_number)
+        # for debuging
+        # TODO some Parameter to only import certain mark numbers
+        # if rebar_mark_number != 3:
+        #     continue
 
         # get the radius and the IfcCurve (Directrix) out of the ifc
         ifc_shape_representation = rebar.Representation.Representations[0]
@@ -237,21 +226,37 @@ def insert(filename, docname, skip=[], only=[], root=None):
         sweep_path = Part.Shape()
         sweep_path.importBrepFromString(brep)
         sweep_path.scale(1000.0)  # IfcOpenShell always outputs in meters
-        wire = Draft.makeWire(sweep_path.Wires[0])
 
-        # rebar shape
-        rebar_shape = rebar2.makeRebarShape(
-            wire,
-            diameter=2*radius,
-            mark=ifc_mark_number,
-            name="RebarShape_Mark_"+str(ifc_mark_number)
-        )
-        rebar_shape.IfcProperties = ifc_properties
-        rebar_objs.append(rebar_shape)
+        # does it makes sense to check if the sweep_path and Radius
+        # really are the same if mark number equals (yes, thus TODO)
+        base_placement = FreeCAD.Placement()
+        if rebar_mark_number not in base_rebars:
+            # create a new rebar shape
+            wire = Draft.makeWire(sweep_path.Wires[0])
+            rebar_shape = rebar2.makeRebarShape(
+                wire,
+                diameter=2*radius,
+                mark=rebar_mark_number,
+                name="RebarShape_Mark_"+str(rebar_mark_number)
+            )
+            rebar_shape.IfcProperties = ifc_properties
+            rebar_objs.append(rebar_shape)
+            base_rebars[rebar_mark_number] = rebar_shape
+        else:
+            # get the relative placement between
+            # the base wire (the one in base_rebars already)
+            # the sweep_path
+            base_wire_obj = base_rebars[rebar_mark_number].Base
+            print(base_wire_obj.Name)
+            base_placement = get_relative_placement(
+                base_wire_obj.Shape,
+                sweep_path
+            )
+            print(base_placement)
 
         # rebar distribution
         # coord placements
-        vec_pls = []
+        vec_base_rebar = []
         for ifc_mapped_item in ifc_shape_representation.Items:
             ifc_cartesian_point = ifc_mapped_item.MappingTarget.LocalOrigin
             coord = ifc_cartesian_point.Coordinates
@@ -260,18 +265,21 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 coord[1] * length_scale,
                 coord[2] * length_scale
             )
-            vec_pls.append(co_vec)
-        # print("\n{}".format(vec_pls))
+            vec_base_rebar.append(co_vec)
+        # print("\n{}".format(vec_base_rebar))
 
         # check if we have a linear distribution
         is_linear_distribution = False
         space_one = 0
-        if len(vec_pls) > 1:
+        if len(vec_base_rebar) > 1:
             # edge from first point to last point
-            ed = Part.Edge(Part.LineSegment(vec_pls[0], vec_pls[-1]))
+            ed = Part.Edge(Part.LineSegment(
+                vec_base_rebar[0],
+                vec_base_rebar[-1])
+            )
             # spacing between first and second point
-            space_one = vec_pls[1] - vec_pls[0]
-            for i, co_vec in enumerate(vec_pls):
+            space_one = vec_base_rebar[1] - vec_base_rebar[0]
+            for i, co_vec in enumerate(vec_base_rebar):
                 # check distance point to edge
                 dist = ed.distToShape(Part.Vertex(co_vec))[0]
                 if dist > 2:
@@ -279,7 +287,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     break
                 # check spaceing, if they are constant
                 if i > 0:
-                    space_i = vec_pls[i] - vec_pls[i-1]
+                    space_i = vec_base_rebar[i] - vec_base_rebar[i-1]
                     difference_length = (space_one - space_i).Length
                     if difference_length > 2:
                         # 2 mm, much better would be some dimensionless value
@@ -305,7 +313,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
         if is_linear_distribution is True:
             # linear lattice2 distribution
             print("Linear distribution found")
-            # print(len(vec_pls))
+            # print(len(vec_base_rebar))
             # print(space_one)
             space_length = space_one.Length
             la = lattice2LinearArray.makeLinearArray(name="LinearArray")
@@ -316,7 +324,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
             la.GeneratorMode = "SpanStep"
             # https://forum.freecadweb.org/viewtopic.php?f=22&t=37657#p320586
             la.Alignment = "Justify"
-            la.SpanEnd = (len(vec_pls) - 1) * space_length
+            la.SpanEnd = (len(vec_base_rebar) - 1) * space_length
             la.Step = space_length
             la.MarkerSize = marker_size
             # direction of linear lattice2 placement
@@ -326,14 +334,17 @@ def insert(filename, docname, skip=[], only=[], root=None):
             la.OrientMode = "None"
             lattice2Executer.executeFeature(la)
             la.Placement = firstbar_pl
-            if la.Count != len(vec_pls):
-                print("Problem: {} != {}".format(la.Count, len(vec_pls)))
+            if la.Count != len(vec_base_rebar):
+                print(
+                    "Problem: {} != {}"
+                    .format(la.Count, len(vec_base_rebar))
+                )
             lattice_placement = la
         else:
             # custom lattice placement for every rebar of this distribution
             print("custom distribution found")
             custom_pls = []
-            for co_vec in vec_pls:
+            for co_vec in vec_base_rebar:
                 custom_pl = lattice2Placement.makeLatticePlacement(
                     name=str(ifc_cartesian_point.id())
                 )
@@ -364,28 +375,30 @@ def insert(filename, docname, skip=[], only=[], root=None):
         rebar2.makeRebarDistributionLattice(
             rebar_shape,
             lattice_placement,
-            name="Distribution_No_"+str(ifc_mark_number)
+            base_placement,
+            name="Distribution_No_"+str(distribution_counter)
         )
+        distribution_counter += 1
 
-        # move rebar shape to the first bar of distribution
-        rebar_shape.Placement = firstbar_pl
-
-        # all_entities_group.addObject(rebar_shape)
         print("")
     FreeCAD.ActiveDocument.recompute()
     # End rebars loop
-
-    groups = {}
-    for no in sorted(list(set(mark_numbers))):
-        groups[no] = FreeCAD.ActiveDocument.addObject(
-            "App::DocumentObjectGroup",
-            "MarkNo_" + str(no)
-        )
-        # print(groups[no].Name)
-    for reb in rebar_objs:
-        groups[reb.MarkNumber].addObject(reb)
 
     if FreeCAD.GuiUp:
         FreeCADGui.activeDocument().activeView().viewAxometric()
         FreeCADGui.SendMsgToActiveView("ViewFit")
     return doc
+
+
+# helper
+def get_relative_placement(shape1, shape2):
+    """returns the placement that must be
+    applied to shape1 to move it to shape_2"""
+    # https://forum.freecadweb.org/viewtopic.php?f=22&t=44880
+    # Assuming that the first 3 vertexes of the shape
+    # correctly define a plane (not coincident, nor colinear)
+    plane1 = Part.Plane(*[v.Point for v in shape1.Vertexes[0:3]])
+    plane2 = Part.Plane(*[v.Point for v in shape2.Vertexes[0:3]])
+    pl1 = FreeCAD.Placement(plane1.Position, plane1.Rotation)
+    pl2 = FreeCAD.Placement(plane2.Position, plane2.Rotation)
+    return pl2.multiply(pl1.inverse())

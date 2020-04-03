@@ -19,11 +19,13 @@
 + property link list _RebarDistributions (liste der groupe obj.)
 + Material (in base _RebarShape class but implemented later)
 
+
 ### Information:
 + bending roll radius, concrete cover, predefined rebar shapes, materials, etc
 + will be in classes which are inherited from base rebar shape class
 + conversion from one inherited _RebarShape class in another one is not so importand
 + much more importand is, the distribution should not get lost, if the _RebarShape sis exchanged
+
 
 ### MarkNumber:
 + later there will be a rebar shape cut list object, a MarkNumber is unique in one rebar shape cut list
@@ -47,19 +49,44 @@
 + would be fine anyway in TreeView if they could be expanded and than every rebar could be clicked and deleted
 + on a special distribution like linear distribution (rebar distance or rebar count are given), the single objects could not be changed
 + this would destroy the distribution, on recompute the deleted or changed rebars would reapear
-
 + What if the distribution is not a real shape, but a coin representation, performance would gain on huge modells!
 + what happes with ifc export in FreeCADCmd mode? Does it work than?
++ Not implemented ATM
 
-### Idea 2 --> same as current FreeCAD rebar implementation
+
+### Idea 2 --> placement list
+#### Attributes:
++ BaseRebar
++ RebarPlacements
++ BasePlacement
+
+#### BaseRebar
++ see my notes pros and cons which obj should link to which (also in this document)
++ search topic in forum and keep link here
++ direct access to BaseRebar is needed,
++ thus link from distribution to rebar shape
++ in rebar shape is distribution needed only for tree view
++ this can be done by a search in doc objects
+
+#### Could a distribution be used in more than one rebar shape ???
++ Could a distribution be used in more than one rebar shape ???
++ would make a collision between the two rebars
++ for this make a clone of the distribution
++ and move a little bit and use this on in the other rebar
++ than not collision
+
+#### RebarPlacements
++ list of placements
++ implemented ATM
++ same as current FreeCAD rebar implementation
 + placement list with the placements of each rebar is calculated
 + a compound from all rebars is made
 + the compound is the distribution
-
++ another placement is needed because one base rebar could be rotated in two distributions
 + but to create the rebars with Python the place needs to be given somehow
 + attribute placements, on recompute or first creation the whole distribution compound will be created
-+ list of placements
 
+#### Improvements
 + later there will be class inherited for:
     + linear distribution: wire and a attribute for distance or wire and attribute count
     + vertex distribution: list of vertieces, on each vertex
@@ -87,7 +114,7 @@
 
 
 ## Problem: how to make the current class (FreeCAD) out of these two classes
-+ we have three objs, _Rebar, RebarShape, _RebarDistribution
++ we have three objs, _Rebar, _RebarShape, _RebarDistribution
 + we have three make methods makeRebar, makeRebarDistribution, makeRebarShape
 + means the new rebar works in parallel, and hopefully some rebar tools will be moved to the new rebar classes
 

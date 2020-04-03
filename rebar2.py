@@ -132,7 +132,7 @@ class _RebarShape(Arch.ArchComponent.Component):
             obj.addProperty(
                 "App::PropertyLength",
                 "Diameter",
-                "Rebar",
+                "Rebar Shape",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
                     "The diameter of this rebar shape"
@@ -143,7 +143,7 @@ class _RebarShape(Arch.ArchComponent.Component):
             obj.addProperty(
                 "App::PropertyInteger",
                 "MarkNumber",
-                "Rebar",
+                "Rebar Shape",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
                     "The mark number of this rebar shape"
@@ -218,7 +218,7 @@ class _ViewProviderRebarBase(Arch.ArchComponent.ViewProviderComponent):
             vobj.addProperty(
                 "App::PropertyString",
                 "RebarShape",
-                "Rebar",
+                "Rebar Shape",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
                     "Shape of rebar"
@@ -429,10 +429,11 @@ class _ViewProviderRebarShape(_ViewProviderRebarBase):
 def makeRebarDistribution(
     base_rebar,
     placements=[],
+    base_placement=FreeCAD.Placement(),
     name="RebarDistribution"
 ):
     """
-    makeRebarDistribution(base_rebar, placements, [name])
+    makeRebarDistribution(base_rebar, placements, [base_placement], [name])
     Adds a reinforcement distribution object.
     """
     if not FreeCAD.ActiveDocument:
@@ -446,7 +447,8 @@ def makeRebarDistribution(
         _ViewProviderRebarDistribution(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
-    obj.Placements = placements
+    obj.RebarPlacements = placements
+    obj.BasePlacement = base_placement
 
     # mark base_rebar obj for recompute to make it collect its new child
     base_rebar.touch()
@@ -492,39 +494,44 @@ class _RebarDistribution(Arch.ArchComponent.Component):
         # but need different MarkNumber
 
         # New properties
-        # Placements
-        if "Placements" not in pl:
+
+        # BaseRebar
+        if "BaseRebar" not in pl:
+            obj.addProperty(
+                "App::PropertyLink",
+                "BaseRebar",
+                "Rebar Distribution",
+                QT_TRANSLATE_NOOP(
+                    "App::Property",
+                    "Base rebar for this distribution"
+                )
+            )
+
+        # RebarPlacements
+        if "RebarPlacements" not in pl:
             obj.addProperty(
                 "App::PropertyPlacementList",
-                "Placements",
-                "Rebar",
+                "RebarPlacements",
+                "Rebar Distribution",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
                     "Placement for each rebar of the distribution"
                 )
             )
+        # TODO: Why ist this property not shown in PropertyEditor
 
-        # BaseRebar
-        # see my notes pros and cons which obj should link to which
-        # search topic in forum and keep link here
-        # direct access to BaseRebar is needed,
-        # thus link from distribution to rebar shape
-        # in rebar shape is distribution needed only for tree view
-        # this can be done by a search in doc objects
-        #
-        # Could a distribution be used in more than one rebar shape
-        # would make a collision between the two rebars
-        # for this make a clone of the distribution
-        # and move a little bit and use this on in the other rebar
-        # than not collision
-        if "BaseRebar" not in pl:
+        # BasePlacement
+        if "BasePlacement" not in pl:
             obj.addProperty(
-                "App::PropertyLink",
-                "BaseRebar",
-                "Rebar",
+                "App::PropertyPlacement",
+                "BasePlacement",
+                "Rebar Distribution",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
-                    "Base rebar for this distribution"
+                    (
+                        "Rotations of the first rebar in "
+                        "the distribution (Yaw-Pitch-Roll)"
+                    )
                 )
             )
 
@@ -543,7 +550,7 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             return
         if not obj.BaseRebar:
             return
-        if not obj.Placements:
+        if not obj.RebarPlacements:
             return
         self.build_shape(obj)
 
@@ -579,11 +586,18 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             obj.Shape = sh()
             return
 
-        # build compound shape with base rebar and distribution placements
+        #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # TODO use BasPlacement to rotate the first shape and thus all others
+        #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        # build compound shape with base rebar
+        # and distribution placements and BasePlacement
         shapes = []
-        for pl in obj.Placements:
+        for pl in obj.RebarPlacements:
             bar = obj.BaseRebar.Shape.copy()
-            bar.Placement = pl
+            # ATM there is no check
+            # if translation vector of BasePlacement is 0, 0, 0
+            bar.Placement = pl.multiply(obj.BasePlacement)
             shapes.append(bar)
         if shapes:
             obj.Shape = Part.makeCompound(shapes)
@@ -604,10 +618,11 @@ class _ViewProviderRebarDistribution(_ViewProviderRebarBase):
 def makeRebarDistributionLattice(
     base_rebar,
     latice_obj,
+    base_placement=FreeCAD.Placement(),
     name="RebarDistributionLattice"
 ):
     """
-    makeRebarDistribution(base_rebar, placements, [name])
+    makeRebarDistribution(base_rebar, placements, [base_placement], [name])
     Adds a reinforcement distribution object.
     """
     from lattice2BaseFeature import isObjectLattice as islattice
@@ -630,6 +645,7 @@ def makeRebarDistributionLattice(
 
     obj.BaseRebar = base_rebar
     obj.LatticePlacement = latice_obj
+    obj.BasePlacement = base_placement
 
     # mark base_rebar obj for recompute to make it collect its new child
     base_rebar.touch()
@@ -668,7 +684,7 @@ class _RebarDistributionLattice(_RebarDistribution):
             obj.addProperty(
                 "App::PropertyLink",
                 "LatticePlacement",
-                "Rebar",
+                "Rebar Distribution",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
                     "Lattice placement obj for this distribution"
@@ -694,7 +710,7 @@ class _RebarDistributionLattice(_RebarDistribution):
         from lattice2BaseFeature import isObjectLattice as islattice
         if islattice(obj.LatticePlacement) is True:
             from lattice2BaseFeature import getPlacementsList as getpl
-            obj.Placements = getpl(obj.LatticePlacement)
+            obj.RebarPlacements = getpl(obj.LatticePlacement)
             self.build_shape(obj)
 
             # set Visibility of BaseRebar
