@@ -250,7 +250,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 wire,
                 diameter=2*radius,
                 mark=rebar_mark_number,
-                name="RebarShape_Mark_"+str(rebar_mark_number)
+                name="BaseRebar_Mark_"+str(rebar_mark_number)
             )
             rebar_shape.IfcProperties = ifc_properties
             rebar_objs.append(rebar_shape)
