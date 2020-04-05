@@ -377,7 +377,8 @@ def insert(filename, docname, skip=[], only=[], root=None):
             rebar_shape,
             lattice_placement,
             base_placement,
-            name="Reinforcement_"+str(reinforcement_counter)
+            # name="Reinforcement_"+str(reinforcement_counter)
+            name="Reinforcement_"+str(pid)
         )
         reinforcement_counter += 1
 
