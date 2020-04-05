@@ -22,6 +22,7 @@
 # code for debuging and implementation of rebar ifc importer
 # code to copy for rebar import
 # may be there are some HACK s
+# there have been takes place renamming and moving methods and class
 
 
 # ************************************************************************************************

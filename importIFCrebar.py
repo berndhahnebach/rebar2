@@ -36,6 +36,7 @@ import lattice2JoinArrays
 import lattice2LinearArray
 import lattice2Placement
 import rebar2
+import reinforcement
 
 from exportIFC import getPropertyData
 from importIFCHelper import decode as ifcdecode
@@ -371,8 +372,8 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 for child in cpa.ViewObject.Proxy.claimChildren():
                     child.ViewObject.hide()
 
-        # rebar2 lattice2 distribution
-        rebar2.makeRebarDistributionLattice(
+        # reinforcement lattice2 distribution
+        reinforcement.makeRebarDistributionLattice(
             rebar_shape,
             lattice_placement,
             base_placement,
