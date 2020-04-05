@@ -47,7 +47,7 @@ else:
 
 
 # ****************************************************************************
-# reinforcement
+# standard reinforcement object
 def makeReinforcement(
     base_rebar,
     placements=[],
@@ -221,7 +221,7 @@ class _Reinforcement(Arch.ArchComponent.Component):
             obj.Shape = Part.makeCompound(shapes)
 
 
-class _ViewProviderReinforcement(ArchBaseRebar._ViewProviderRebarBase):
+class _ViewProviderReinforcement(ArchBaseRebar._ViewProviderRebarCommon):
 
     def getIcon(
         self
@@ -232,7 +232,7 @@ class _ViewProviderReinforcement(ArchBaseRebar._ViewProviderRebarBase):
 
 
 # ****************************************************************************
-# rebar lattice2 reinforcement
+# lattice2 reinforcement object
 def makeReinforcementLattice(
     base_rebar,
     latice_obj,

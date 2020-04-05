@@ -47,7 +47,7 @@ else:
 
 
 # ****************************************************************************
-# base rebar
+# base rebar object
 def makeBaseRebar(
     base,
     diameter=None,
@@ -201,7 +201,102 @@ class _BaseRebar(Arch.ArchComponent.Component):
             return
 
 
-class _ViewProviderRebarBase(Arch.ArchComponent.ViewProviderComponent):
+class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
+
+    def getIcon(
+        self
+    ):
+        import Arch_rc
+        False if Arch_rc.__name__ else True  # dummy usage
+        return ":/icons/Arch_Pipe_Tree.svg"
+
+    def onDelete(self, feature, subelements):
+        try:
+            for o in self.claimChildren():
+                o.ViewObject.show()
+        except Exception:
+            FreeCAD.Console.PrintError("Error in onDelete: ")
+        return True
+
+    def claimChildren(
+        self
+    ):
+        # collect the children for TreeView
+
+        # children from Arch.Component
+        # since we overwrite the method we need to explicit call it
+        children = ArchComponent.ViewProviderComponent.claimChildren(self)
+
+        # special rebar shape children
+        if hasattr(self, "Object"):
+
+            # claim reinforcements for this rebar
+            for o in self.Object.Document.Objects:
+                # print(Draft.getType(o))
+                if (
+                    Draft.getType(o) == "ReinforcementLattice"
+                    or Draft.getType(o) == "Reinforcement"
+                ):
+                    if o.BaseRebar == self.Object:
+                        children.append(o)
+
+            # print(children)
+            return children
+        return children
+
+    # Drag and Drop for the children
+    """
+    # https://forum.freecadweb.org/viewtopic.php?f=10&t=28760
+    # https://forum.freecadweb.org/viewtopic.php?f=10&t=37632
+    # drag ... in German: ausschneiden, ziehen
+    # drop ... in German: loslassen, einfuegen, ablegen
+    """
+    # TODO !!!!!!!!!!!!!!!!!!!!!!
+    # it is possible to copy a distribution into another rebar shape
+    # this should not be possible
+    # a distribution can only have one BaseRebar, see class distribution
+    def canDragObjects(self):
+        return True
+
+    def canDropObjects(self):
+        return True
+
+    def canDragObject(self, dragged_object):
+        if (
+            Draft.getType(dragged_object) == "RebarDistributionLattice"
+            or Draft.getType(dragged_object) == "RebarDistribution"
+        ):
+            return True
+        else:
+            return False
+
+    def canDropObject(self, incoming_object):
+        return True
+
+    def dragObject(self, selfvp, dragged_object):
+        if (
+            Draft.getType(dragged_object) == "RebarDistributionLattice"
+            or Draft.getType(dragged_object) == "RebarDistribution"
+        ):
+            dragged_object.BaseRebar = None
+            # mark the object we move out to recompute
+            selfvp.Object.touch()
+        FreeCAD.ActiveDocument.recompute()
+
+    def dropObject(self, selfvp, incoming_object):
+        if (
+            Draft.getType(incoming_object) == "RebarDistributionLattice"
+            or Draft.getType(incoming_object) == "RebarDistribution"
+        ):
+            incoming_object.BaseRebar = selfvp.Object
+            # mark the object we move in to recompute
+            selfvp.Object.touch()
+        FreeCAD.ActiveDocument.recompute()
+
+
+# ****************************************************************************
+# generic rebar and reinforcement ViewProvider
+class _ViewProviderRebarCommon(Arch.ArchComponent.ViewProviderComponent):
 
     """A View Provider for the rebar and reinforcement object"""
     # inherite this class and only use a different icon
@@ -329,96 +424,3 @@ class _ViewProviderRebarBase(Arch.ArchComponent.ViewProviderComponent):
         )
         modes.append("Centerline")
         return modes
-
-
-class _ViewProviderRebarShape(_ViewProviderRebarBase):
-
-    def getIcon(
-        self
-    ):
-        import Arch_rc
-        False if Arch_rc.__name__ else True  # dummy usage
-        return ":/icons/Arch_Pipe_Tree.svg"
-
-    def onDelete(self, feature, subelements):
-        try:
-            for o in self.claimChildren():
-                o.ViewObject.show()
-        except Exception:
-            FreeCAD.Console.PrintError("Error in onDelete: ")
-        return True
-
-    def claimChildren(
-        self
-    ):
-        # collect the children for TreeView
-
-        # children from Arch.Component
-        # since we overwrite the method we need to explicit call it
-        children = ArchComponent.ViewProviderComponent.claimChildren(self)
-
-        # special rebar shape children
-        if hasattr(self, "Object"):
-
-            # claim reinforcements for this rebar
-            for o in self.Object.Document.Objects:
-                # print(Draft.getType(o))
-                if (
-                    Draft.getType(o) == "ReinforcementLattice"
-                    or Draft.getType(o) == "Reinforcement"
-                ):
-                    if o.BaseRebar == self.Object:
-                        children.append(o)
-
-            # print(children)
-            return children
-        return children
-
-    # Drag and Drop for the children
-    """
-    # https://forum.freecadweb.org/viewtopic.php?f=10&t=28760
-    # https://forum.freecadweb.org/viewtopic.php?f=10&t=37632
-    # drag ... in German: ausschneiden, ziehen
-    # drop ... in German: loslassen, einfuegen, ablegen
-    """
-    # TODO !!!!!!!!!!!!!!!!!!!!!!
-    # it is possible to copy a distribution into another rebar shape
-    # this should not be possible
-    # a distribution can only have one BaseRebar, see class distribution
-    def canDragObjects(self):
-        return True
-
-    def canDropObjects(self):
-        return True
-
-    def canDragObject(self, dragged_object):
-        if (
-            Draft.getType(dragged_object) == "RebarDistributionLattice"
-            or Draft.getType(dragged_object) == "RebarDistribution"
-        ):
-            return True
-        else:
-            return False
-
-    def canDropObject(self, incoming_object):
-        return True
-
-    def dragObject(self, selfvp, dragged_object):
-        if (
-            Draft.getType(dragged_object) == "RebarDistributionLattice"
-            or Draft.getType(dragged_object) == "RebarDistribution"
-        ):
-            dragged_object.BaseRebar = None
-            # mark the object we move out to recompute
-            selfvp.Object.touch()
-        FreeCAD.ActiveDocument.recompute()
-
-    def dropObject(self, selfvp, incoming_object):
-        if (
-            Draft.getType(incoming_object) == "RebarDistributionLattice"
-            or Draft.getType(incoming_object) == "RebarDistribution"
-        ):
-            incoming_object.BaseRebar = selfvp.Object
-            # mark the object we move in to recompute
-            selfvp.Object.touch()
-        FreeCAD.ActiveDocument.recompute()
