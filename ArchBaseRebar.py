@@ -52,7 +52,7 @@ def makeBaseRebar(
     base,
     diameter=None,
     mark=None,
-    name="RebarShape"
+    name="BaseRebar"
 ):
     """
     makeBaseRebar(base, [diameter, mark, name]):
@@ -69,7 +69,7 @@ def makeBaseRebar(
     # may be set the label to the mark number
     # or even have an attribute which does it on any recompute
 
-    _RebarShape(obj)
+    _BaseRebar(obj)
     if FreeCAD.GuiUp:
         _ViewProviderRebarShape(obj.ViewObject)
 
@@ -89,7 +89,7 @@ def makeBaseRebar(
     return obj
 
 
-class _RebarShape(Arch.ArchComponent.Component):
+class _BaseRebar(Arch.ArchComponent.Component):
 
     "A reinforcement bar (rebar) object for a rebar shape"
 

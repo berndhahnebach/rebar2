@@ -70,7 +70,7 @@ FreeCAD.ActiveDocument.recompute()
 import FreeCAD, Arch, Draft, ArchBaseRebar, ArchReinforcement
 from FreeCAD import Vector as vec
 wire1 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 1000)])
-rebshape1 = ArchBaseRebar.makeBaseRebar(wire1, diameter=100, mark=1, name="Rebar1")
+rebshape1 = ArchBaseRebar.makeBaseRebar(wire1, diameter=100, mark=1, name="BaseRebar_1")
 FreeCAD.ActiveDocument.recompute()
 
 import DraftVecUtils
@@ -82,7 +82,7 @@ for i in range(10):
     barlocation = DraftVecUtils.scaleTo(FreeCAD.Base.Vector(1, 0, 0), move)
     pl_list.append(FreeCAD.Placement(barlocation, rot))
 
-rebdistribution1 = ArchReinforcement.makeReinforcement(rebshape1, pl_list, name="Distribution1")
+rebdistribution1 = ArchReinforcement.makeReinforcement(rebshape1, pl_list, name="Reinforcement_1")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -93,7 +93,7 @@ FreeCAD.ActiveDocument.recompute()
 import FreeCAD, Arch, Draft, ArchBaseRebar, ArchReinforcement
 from FreeCAD import Vector as vec
 wire3 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 2000)])
-rebshape3 = ArchBaseRebar.makeBaseRebar(wire3, diameter=30, mark=1, name="Rebar2")
+rebshape3 = ArchBaseRebar.makeBaseRebar(wire3, diameter=30, mark=1, name="BaseRebar_2")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -115,7 +115,7 @@ FreeCAD.ActiveDocument.recompute()
 
 from lattice2BaseFeature import getPlacementsList as getpl
 # standard distributions, only the placments of the lattice2 use the placements, 
-rebdistribution2 = ArchReinforcement.makeReinforcement(rebshape3, placements=getpl(la1), name="Distribution2")
+rebdistribution2 = ArchReinforcement.makeReinforcement(rebshape3, placements=getpl(la1), name="Reinforcement_2")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -124,7 +124,7 @@ FreeCAD.ActiveDocument.recompute()
 import FreeCAD, Arch, Draft, ArchBaseRebar, ArchReinforcement
 from FreeCAD import Vector as vec
 wire2 = Draft.makeWire([vec(300, 0, 0), vec(0, 0, 0), vec(0, 0, 140), vec(300, 0, 140)])
-rebshape2 = ArchBaseRebar.makeBaseRebar(wire2, diameter=30, mark=2, name="Rebar3")
+rebshape2 = ArchBaseRebar.makeBaseRebar(wire2, diameter=30, mark=2, name="BaseRebar_3")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -193,10 +193,10 @@ rotangle = 90  # degrees
 base_placement1 = FreeCAD.Placement(translation,FreeCAD.Rotation(rotaxis,rotangle))
 
 # lattice2 distribution
-rebdistribution3 = ArchReinforcement.makeReinforcementLattice(rebshape2, la2, base_placement1, "Distribution3")
-rebdistribution3 = ArchReinforcement.makeReinforcementLattice(rebshape2, pa1, name="Distribution4")
-rebdistribution4 = ArchReinforcement.makeReinforcementLattice(rebshape2, cs1, name="Distribution5")
-rebdistribution5 = ArchReinforcement.makeReinforcementLattice(rebshape2, cpa, name="Distribution6")
+rebdistribution3 = ArchReinforcement.makeReinforcementLattice(rebshape2, la2, base_placement1, "Reinforcement_3")
+rebdistribution3 = ArchReinforcement.makeReinforcementLattice(rebshape2, pa1, name="Reinforcement_4")
+rebdistribution4 = ArchReinforcement.makeReinforcementLattice(rebshape2, cs1, name="Reinforcement_5")
+rebdistribution5 = ArchReinforcement.makeReinforcementLattice(rebshape2, cpa, name="Reinforcement_6")
 FreeCAD.ActiveDocument.recompute()
 
 
