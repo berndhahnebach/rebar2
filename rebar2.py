@@ -586,10 +586,6 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             obj.Shape = sh()
             return
 
-        #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        # TODO use BasPlacement to rotate the first shape and thus all others
-        #   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
         # build compound shape with base rebar
         # and distribution placements and BasePlacement
         shapes = []
