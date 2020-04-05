@@ -47,15 +47,15 @@ else:
 
 
 # ****************************************************************************
-# rebar shape
-def makeRebarShape(
+# base rebar
+def makeBaseRebar(
     base,
     diameter=None,
     mark=None,
     name="RebarShape"
 ):
     """
-    makeRebarShape(base, [diameter, mark, name]):
+    makeBaseRebar(base, [diameter, mark, name]):
     Adds a Reinforcement Bar object using the given base
     (sketch or wire) as sweep path.
     """

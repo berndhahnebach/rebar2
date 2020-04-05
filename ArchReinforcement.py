@@ -29,7 +29,7 @@ import Arch
 import ArchComponent
 import Part
 
-import rebar2
+import ArchBaseRebar
 
 if FreeCAD.GuiUp:
     # import FreeCADGui
@@ -221,7 +221,7 @@ class _Reinforcement(Arch.ArchComponent.Component):
             obj.Shape = Part.makeCompound(shapes)
 
 
-class _ViewProviderReinforcement(rebar2._ViewProviderRebarBase):
+class _ViewProviderReinforcement(ArchBaseRebar._ViewProviderRebarBase):
 
     def getIcon(
         self
