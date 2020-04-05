@@ -19,17 +19,18 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD rebar2 object"
+__title__ = "FreeCAD base rebar object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
 import Arch
-import ArchCommands
 import ArchComponent
 import Draft
 import Part
+
+import ArchVPRebar
 
 if FreeCAD.GuiUp:
     # import FreeCADGui
@@ -47,7 +48,6 @@ else:
 
 
 # ****************************************************************************
-# base rebar object
 def makeBaseRebar(
     base,
     diameter=None,
@@ -71,7 +71,7 @@ def makeBaseRebar(
 
     _BaseRebar(obj)
     if FreeCAD.GuiUp:
-        _ViewProviderRebarShape(obj.ViewObject)
+        _ViewProviderBaseRebar(obj.ViewObject)
 
     obj.Base = base
     if FreeCAD.GuiUp:
@@ -89,6 +89,7 @@ def makeBaseRebar(
     return obj
 
 
+# ****************************************************************************
 class _BaseRebar(Arch.ArchComponent.Component):
 
     """
@@ -243,7 +244,8 @@ class _BaseRebar(Arch.ArchComponent.Component):
             return
 
 
-class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
+# ****************************************************************************
+class _ViewProviderBaseRebar(ArchVPRebar._ViewProviderRebarCommon):
 
     def getIcon(
         self
@@ -334,135 +336,3 @@ class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
             # mark the object we move in to recompute
             selfvp.Object.touch()
         FreeCAD.ActiveDocument.recompute()
-
-
-# ****************************************************************************
-# generic rebar and reinforcement ViewProvider
-class _ViewProviderRebarCommon(Arch.ArchComponent.ViewProviderComponent):
-
-    """A View Provider for the rebar and reinforcement object"""
-    # inherite this class and only use a different icon
-    # color may be not brown, may be depending on diameter
-
-    def __init__(
-        self,
-        vobj
-    ):
-        ArchComponent.ViewProviderComponent.__init__(self, vobj)
-
-        pl = vobj.PropertiesList
-        if "RebarShape" not in pl:
-            vobj.addProperty(
-                "App::PropertyString",
-                "RebarShape",
-                "Rebar Shape",
-                QT_TRANSLATE_NOOP(
-                    "App::Property",
-                    "Shape of rebar"
-                )
-            ).RebarShape
-            vobj.setEditorMode("RebarShape", 2)
-
-        vobj.ShapeColor = ArchCommands.getDefaultColor("Rebar")
-
-    def onDocumentRestored(
-        self,
-        vobj
-    ):
-        self.setProperties(vobj)
-
-    def setEdit(
-        self,
-        vobj,
-        mode
-    ):
-        if mode == 0:
-            if vobj.RebarShape:
-                try:
-                    # Import module of RebarShape
-                    module = __import__(vobj.RebarShape)
-                except ImportError:
-                    FreeCAD.Console.PrintError(
-                        "Unable to import RebarShape module\n"
-                    )
-                    return
-                module.editDialog(vobj)
-
-    def updateData(
-        self,
-        obj,
-        prop
-    ):
-        if prop == "Shape":
-            if hasattr(self, "centerline"):
-                if self.centerline:
-                    self.centerlinegroup.removeChild(self.centerline)
-            if hasattr(obj.Proxy, "wires"):
-                if obj.Proxy.wires:
-                    from pivy import coin
-                    import re
-                    self.centerline = coin.SoSeparator()
-                    comp = Part.makeCompound(obj.Proxy.wires)
-                    pts = re.findall(
-                        "point \[(.*?)\]",
-                        comp.writeInventor().replace("\n", "")
-                    )
-                    pts = [p.split(",") for p in pts]
-                    for pt in pts:
-                        ps = coin.SoSeparator()
-                        plist = []
-                        for p in pt:
-                            c = []
-                            for pstr in p.split(" "):
-                                if pstr:
-                                    c.append(float(pstr))
-                            plist.append(c)
-                        coords = coin.SoCoordinate3()
-                        coords.point.setValues(plist)
-                        ps.addChild(coords)
-                        ls = coin.SoLineSet()
-                        ls.numVertices = -1
-                        ps.addChild(ls)
-                        self.centerline.addChild(ps)
-                    self.centerlinegroup.addChild(self.centerline)
-        ArchComponent.ViewProviderComponent.updateData(self, obj, prop)  # ???
-
-    def attach(
-        self,
-        vobj
-    ):
-        self.ViewObject = vobj
-        self.Object = vobj.Object
-        from pivy import coin
-        self.centerlinegroup = coin.SoSeparator()
-        self.centerlinegroup.setName("Centerline")
-        self.centerlinecolor = coin.SoBaseColor()
-        self.centerlinestyle = coin.SoDrawStyle()
-        self.centerlinegroup.addChild(self.centerlinecolor)
-        self.centerlinegroup.addChild(self.centerlinestyle)
-        vobj.addDisplayMode(self.centerlinegroup, "Centerline")
-        ArchComponent.ViewProviderComponent.attach(self, vobj)  # ???
-
-    def onChanged(
-        self,
-        vobj,
-        prop
-    ):
-        if (prop == "LineColor") and hasattr(vobj, "LineColor"):
-            if hasattr(self, "centerlinecolor"):
-                c = vobj.LineColor
-                self.centerlinecolor.rgb.setValue(c[0], c[1], c[2])
-        elif (prop == "LineWidth") and hasattr(vobj, "LineWidth"):
-            if hasattr(self, "centerlinestyle"):
-                self.centerlinestyle.lineWidth = vobj.LineWidth
-        ArchComponent.ViewProviderComponent.onChanged(self, vobj, prop)  # ???
-
-    def getDisplayModes(
-        self,
-        vobj
-    ):
-        modes = ArchComponent.ViewProviderComponent.getDisplayModes(
-            self, vobj
-        )
-        modes.append("Centerline")
-        return modes

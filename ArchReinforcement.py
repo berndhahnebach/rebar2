@@ -29,7 +29,7 @@ import Arch
 import ArchComponent
 import Part
 
-import ArchBaseRebar
+import ArchVPRebar
 
 if FreeCAD.GuiUp:
     # import FreeCADGui
@@ -108,6 +108,10 @@ class _Reinforcement(Arch.ArchComponent.Component):
     other way around. If every reinforcement would have the rebar shape as
     child it would be confusing. Really? Why not? It just would need some
     list or group or whatever with all base rebars. TODO find out.
+
+    Module separation?
+    -----------------_
+    Should _ReinforcementLattice in a separate module?
 
     Additional Attributes
     ---------------------
@@ -260,7 +264,7 @@ class _Reinforcement(Arch.ArchComponent.Component):
             obj.Shape = Part.makeCompound(shapes)
 
 
-class _ViewProviderReinforcement(ArchBaseRebar._ViewProviderRebarCommon):
+class _ViewProviderReinforcement(ArchVPRebar._ViewProviderRebarCommon):
 
     def getIcon(
         self
