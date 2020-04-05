@@ -1,43 +1,4 @@
-# rebar2
-
-## General 
-+ like ifc export, two objects with IfcType = IfcReinforcementBar
-+ only the distribution count !
-
-
-## in TreeView:
-+ object _RebarShape
-+ has as child a wire or sketch object
-+ could have 1 to x more children, the _RebarDistribution objects (property link list)
-
-
-## class _RebarShape
-### Attributes:
-+ Base (wire or Sketch)
-+ Diameter
-+ MarkNumber
-+ property link list _RebarDistributions (liste der groupe obj.)
-+ Material (in base _RebarShape class but implemented later)
-
-### Information:
-+ bending roll radius, concrete cover, predefined rebar shapes, materials, etc
-+ will be in classes which are inherited from base rebar shape class
-+ conversion from one inherited _RebarShape class in another one is not so importand
-+ much more importand is, the distribution should not get lost, if the _RebarShape sis exchanged
-
-### MarkNumber:
-+ later there will be a rebar shape cut list object, a MarkNumber is unique in one rebar shape cut list
-+ really? it is possible to make a bill above the whole building, the results in dozens of MarkNumber 1
-+ for a rebar shape cut list which will go to the building site, the MarkNumber should be unique
-+ for a quantity report to know how much material is used it would be ok to have multiple MarkNumber in one rebar shape cut list
-+ the user should be able to explicit decide if in a rebar shape cut list multiple MarkNumbers are allowed
-+ May be a String should be used as MarkNumber,
-+ thus it can be integer, big or small ASCII character, rome letter
-+ but than another property or preference is needed to set the type mentioned above
-+ but for which rebar shapes, for a rebar shape cut list for the whole file for each rebar shape separately
-
-
-## class _RebarDistribution
+## class _Reinforcement
 ### Idea 1 --> group of clones
 + every distribution is a group of clones
 + this would mean, _RebarDistribution can not be created without a _RebarShape
@@ -92,5 +53,6 @@
 + means the new rebar works in parallel, and hopefully some rebar tools will be moved to the new rebar classes
 
 
-## Links
+## IFC export
 + https://forum.freecadweb.org/viewtopic.php?f=39&t=35848
++ onle the reinforcement objs should be exported not the base rebar objs

@@ -91,7 +91,50 @@ def makeBaseRebar(
 
 class _BaseRebar(Arch.ArchComponent.Component):
 
-    "A reinforcement bar (rebar) object for a rebar shape"
+    """
+    A base reinforcement bar (rebar) object for a rebar shape
+
+    Information
+    -----------
+    Retrieved from ArchComponent class Component.
+    TODO bending roll radius, concrete cover, predefined rebar shapes.
+    The object in TreeView has one child, its base and could
+    have dozens of childreen, the reinforcements. The link between
+    child and father is defined in the child. See _Reinforcement class.
+    The base rebar should normally not be exported to IFC.
+    
+
+    Known Attributes
+    ----------------
+    Base : App::PropertyLink
+        ATM for base rebar only one Wire is supported
+        TODO Sketch should be supported as well.
+    Material : App::PropertyLink
+        Material object. TODO implement use of Material in base rebar
+
+    Additional Attributes
+    ---------------------
+    Diameter : App::PropertyLength
+        Diameter of the base rebar. It would make sense to limit
+        the available diameter to the diameter known in the country
+        the base rebar will be made for.
+    MarkNumber : App::PropertyInteger
+        Needed to identify reinforcements on the bar shape cut list.
+
+        Unique number on one bar shape cut list for manufactor
+        or for the building site. But for quantity report to know
+        how much material (kg steel) was used a bar shape cut list
+        could be made for a whole building. In this list duplicate
+        MarkNumber would be allowed. The user should be able
+        to explicit decide if in a rebar shape cut list
+        duplicate MarkNumbers are allowed.
+
+        May be a String should be used as MarkNumber. With this
+        MarkNumber could be integer, big or small ASCII character
+        or even Rome letter. But than another property is needed
+        to set the type mentioned above. But for what should it be set?
+        For each base rebar.
+    """
 
     def __init__(
         self,
@@ -111,7 +154,7 @@ class _BaseRebar(Arch.ArchComponent.Component):
         # ArchComponent properties will be inherited
         # Material, Base, MoveBase, ...
         # base is a sketch or profil the ArchComponent is based on,
-        # for rebar the wire host is the father element,
+        # for rebar the host is the father element,
         # for rebar the structure the rebar is in
 
         # do not show some not needed Component attributes in Editor
@@ -124,7 +167,7 @@ class _BaseRebar(Arch.ArchComponent.Component):
         obj.setEditorMode("Subtractions", 2)
         obj.setEditorMode("VerticalArea", 2)
         # CloneOf makes sense if two rebars are identical
-        # but need different MarkNumber
+        # but should have different MarkNumber
 
         # New properties
         # Diameter
