@@ -295,9 +295,9 @@ class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
     # drop ... in German: loslassen, einfuegen, ablegen
     """
     # TODO !!!!!!!!!!!!!!!!!!!!!!
-    # it is possible to copy a distribution into another rebar shape
+    # it is possible to copy a reinforcement into another base rebar
     # this should not be possible
-    # a distribution can only have one BaseRebar, see class distribution
+    # a reinforcement can only have one base rebar, see class reinforcement
     def canDragObjects(self):
         return True
 
@@ -306,8 +306,8 @@ class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
 
     def canDragObject(self, dragged_object):
         if (
-            Draft.getType(dragged_object) == "RebarDistributionLattice"
-            or Draft.getType(dragged_object) == "RebarDistribution"
+            Draft.getType(dragged_object) == "ReinforcementLattice"
+            or Draft.getType(dragged_object) == "Reinforcement"
         ):
             return True
         else:
@@ -318,8 +318,8 @@ class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
 
     def dragObject(self, selfvp, dragged_object):
         if (
-            Draft.getType(dragged_object) == "RebarDistributionLattice"
-            or Draft.getType(dragged_object) == "RebarDistribution"
+            Draft.getType(dragged_object) == "ReinforcementLattice"
+            or Draft.getType(dragged_object) == "Reinforcement"
         ):
             dragged_object.BaseRebar = None
             # mark the object we move out to recompute
@@ -328,8 +328,8 @@ class _ViewProviderBaseRebar(_ViewProviderRebarCommon):
 
     def dropObject(self, selfvp, incoming_object):
         if (
-            Draft.getType(incoming_object) == "RebarDistributionLattice"
-            or Draft.getType(incoming_object) == "RebarDistribution"
+            Draft.getType(incoming_object) == "ReinforcementLattice"
+            or Draft.getType(incoming_object) == "Reinforcement"
         ):
             incoming_object.BaseRebar = selfvp.Object
             # mark the object we move in to recompute
