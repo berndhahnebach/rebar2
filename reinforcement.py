@@ -19,16 +19,14 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD rebar based on bar shape class and distribution class"
+__title__ = "FreeCAD reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
 import Arch
-import ArchCommands
 import ArchComponent
-import Draft
 import Part
 
 import rebar2
@@ -49,16 +47,16 @@ else:
 
 
 # ****************************************************************************
-# rebar distribution
-def makeRebarDistribution(
+# reinforcement
+def makeReinforcement(
     base_rebar,
     placements=[],
     base_placement=FreeCAD.Placement(),
-    name="RebarDistribution"
+    name="Reinforcement"
 ):
     """
-    makeRebarDistribution(base_rebar, placements, [base_placement], [name])
-    Adds a reinforcement distribution object.
+    makeReinforcement(base_rebar, placements, [base_placement], [name])
+    Adds a reinforcement object.
     """
     if not FreeCAD.ActiveDocument:
         FreeCAD.Console.PrintError("No active document. Aborting\n")
@@ -66,9 +64,9 @@ def makeRebarDistribution(
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
     obj.Label = translate("Arch", name)
 
-    _RebarDistribution(obj)
+    _Reinforcement(obj)
     if FreeCAD.GuiUp:
-        _ViewProviderRebarDistribution(obj.ViewObject)
+        _ViewProviderReinforcement(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.RebarPlacements = placements
@@ -80,9 +78,9 @@ def makeRebarDistribution(
     return obj
 
 
-class _RebarDistribution(Arch.ArchComponent.Component):
+class _Reinforcement(Arch.ArchComponent.Component):
 
-    "A reinforcement bar (rebar) object for a rebar distribution"
+    "A reinforcement object based on a rebar object"
 
     def __init__(
         self,
@@ -98,7 +96,7 @@ class _RebarDistribution(Arch.ArchComponent.Component):
         self,
         obj
     ):
-        self.Type = "RebarDistribution"
+        self.Type = "Reinforcement"
         pl = obj.PropertiesList
 
         # ArchComponent properties will be inherited
@@ -124,10 +122,10 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             obj.addProperty(
                 "App::PropertyLink",
                 "BaseRebar",
-                "Rebar Distribution",
+                "Reinforcement",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
-                    "Base rebar for this distribution"
+                    "Base rebar for this reinforcement"
                 )
             )
 
@@ -136,10 +134,10 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             obj.addProperty(
                 "App::PropertyPlacementList",
                 "RebarPlacements",
-                "Rebar Distribution",
+                "Reinforcement",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
-                    "Placement for each rebar of the distribution"
+                    "Placement for each rebar of the reinforcement"
                 )
             )
         # TODO: Why ist this property not shown in PropertyEditor
@@ -149,12 +147,12 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             obj.addProperty(
                 "App::PropertyPlacement",
                 "BasePlacement",
-                "Rebar Distribution",
+                "Reinforcement",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
                     (
                         "Rotations of the first rebar in "
-                        "the distribution (Yaw-Pitch-Roll)"
+                        "the reinforcement (Yaw-Pitch-Roll)"
                     )
                 )
             )
@@ -182,7 +180,7 @@ class _RebarDistribution(Arch.ArchComponent.Component):
         # this should be done in the Gui Command,
         # but this dos not yet exist TODO
         # set view of base rebar to off
-        # if distribution shape is not a null shape
+        # if reinforcement shape is not a null shape
         # TODO may be use another color for base rebar
         if FreeCAD.GuiUp:
             if obj.Shape.isNull() is not True:
@@ -203,15 +201,15 @@ class _RebarDistribution(Arch.ArchComponent.Component):
         """
         if hasattr(obj, "BaseRebar") and obj.BaseRebar is None:
             FreeCAD.Console.PrintMessage(
-                "BaseRebar property is not set for rebar distribution: {}. "
-                "Shape the the distribution will be an empty shape.\n"
+                "BaseRebar property is not set for reinforcement: {}. "
+                "Shape the the reinforcement will be an empty shape.\n"
                 .format(obj.Label)
             )
             obj.Shape = sh()
             return
 
         # build compound shape with base rebar
-        # and distribution placements and BasePlacement
+        # and reinforcement placements and BasePlacement
         shapes = []
         for pl in obj.RebarPlacements:
             bar = obj.BaseRebar.Shape.copy()
@@ -223,7 +221,7 @@ class _RebarDistribution(Arch.ArchComponent.Component):
             obj.Shape = Part.makeCompound(shapes)
 
 
-class _ViewProviderRebarDistribution(rebar2._ViewProviderRebarBase):
+class _ViewProviderReinforcement(rebar2._ViewProviderRebarBase):
 
     def getIcon(
         self
@@ -234,16 +232,16 @@ class _ViewProviderRebarDistribution(rebar2._ViewProviderRebarBase):
 
 
 # ****************************************************************************
-# rebar lattice2 distribution
-def makeRebarDistributionLattice(
+# rebar lattice2 reinforcement
+def makeReinforcementLattice(
     base_rebar,
     latice_obj,
     base_placement=FreeCAD.Placement(),
-    name="RebarDistributionLattice"
+    name="ReinforcementLattice"
 ):
     """
-    makeRebarDistribution(base_rebar, placements, [base_placement], [name])
-    Adds a reinforcement distribution object.
+    makeReinforcementLattice(base_rebar, placements, [base_placement], [name])
+    Adds a lattice reinforcement object.
     """
     from lattice2BaseFeature import isObjectLattice as islattice
     if islattice(latice_obj) is not True:
@@ -259,9 +257,9 @@ def makeRebarDistributionLattice(
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
     obj.Label = translate("Arch", name)
 
-    _RebarDistributionLattice(obj)
+    _ReinforcementLattice(obj)
     if FreeCAD.GuiUp:
-        _ViewProviderRebarDistributionLattice(obj.ViewObject)
+        _ViewProviderReinforcementLattice(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.LatticePlacement = latice_obj
@@ -273,41 +271,41 @@ def makeRebarDistributionLattice(
     return obj
 
 
-class _RebarDistributionLattice(_RebarDistribution):
+class _ReinforcementLattice(_Reinforcement):
 
     """A reinforcement bar (rebar) object
-    for a rebar distribution based on a lattic2 placement"""
+    for a reinforcement based on a lattic2 placement"""
 
     def __init__(
         self,
         obj
     ):
-        _RebarDistribution.__init__(self, obj)
+        _Reinforcement.__init__(self, obj)
 
         # self.setPropertiesLattice(obj)
-        # why the Distribution properties should have been added ...
+        # why the reinforcement properties should have been added ...
         # move to __init__ :-)
 
-        self.Type = "RebarDistributionLattice"
+        self.Type = "ReinforcementLattice"
 
         # LatticePlacement
-        # can a distribution have multiple lattice placement
+        # can a reinforcement have multiple lattice placement
         # example stirrups of a column
         # but this will be difficault
         # to automatically create text for bar space etc
         # means not used ATM
         # further more dangerous because collisons,
         # cause double placements
-        # same if one distribution in more rebar shapes
+        # same if one reinforcement in more rebar shapes
         # such is cool but corner cases could make problems
         if "LatticePlacement" not in obj.PropertiesList:
             obj.addProperty(
                 "App::PropertyLink",
                 "LatticePlacement",
-                "Rebar Distribution",
+                "Reinforcement",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
-                    "Lattice placement obj for this distribution"
+                    "Lattice placement obj for this reinforcement"
                 )
             )
 
@@ -337,7 +335,7 @@ class _RebarDistributionLattice(_RebarDistribution):
             # this should be done in the Gui Command,
             # but this dos not yet exist TODO
             # set view of base rebar to off
-            # if distribution shape is not a null shape
+            # if reinforcement shape is not a null shape
             # TODO may be use another color for base rebar
             if FreeCAD.GuiUp:
                 if obj.Shape.isNull() is not True:
@@ -349,7 +347,7 @@ class _RebarDistributionLattice(_RebarDistribution):
             )
 
 
-class _ViewProviderRebarDistributionLattice(_ViewProviderRebarDistribution):
+class _ViewProviderReinforcementLattice(_ViewProviderReinforcement):
 
     def getIcon(
         self
@@ -367,10 +365,10 @@ class _ViewProviderRebarDistributionLattice(_ViewProviderRebarDistribution):
         # since we overwrite the method we need to explicit call it
         children = ArchComponent.ViewProviderComponent.claimChildren(self)
 
-        # special rebar distribution children
+        # special reinforcement children
         if hasattr(self, "Object"):
 
-            # claim lattice2 placements for this rebar distribution lattice
+            # claim lattice2 placements for this reinforcement lattice
             if self.Object.LatticePlacement is not None:
                 children.append(self.Object.LatticePlacement)
 

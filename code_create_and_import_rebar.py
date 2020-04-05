@@ -82,7 +82,7 @@ for i in range(10):
     barlocation = DraftVecUtils.scaleTo(FreeCAD.Base.Vector(1, 0, 0), move)
     pl_list.append(FreeCAD.Placement(barlocation, rot))
 
-rebdistribution1 = reinforcement.makeRebarDistribution(rebshape1, pl_list, name="Distribution1")
+rebdistribution1 = reinforcement.makeReinforcement(rebshape1, pl_list, name="Distribution1")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -115,7 +115,7 @@ FreeCAD.ActiveDocument.recompute()
 
 from lattice2BaseFeature import getPlacementsList as getpl
 # standard distributions, only the placments of the lattice2 use the placements, 
-rebdistribution2 = reinforcement.makeRebarDistribution(rebshape3, placements=getpl(la1), name="Distribution2")
+rebdistribution2 = reinforcement.makeReinforcement(rebshape3, placements=getpl(la1), name="Distribution2")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -193,10 +193,10 @@ rotangle = 90  # degrees
 base_placement1 = FreeCAD.Placement(translation,FreeCAD.Rotation(rotaxis,rotangle))
 
 # lattice2 distribution
-rebdistribution3 = reinforcement.makeRebarDistributionLattice(rebshape2, la2, base_placement1, "Distribution3")
-rebdistribution3 = reinforcement.makeRebarDistributionLattice(rebshape2, pa1, name="Distribution4")
-rebdistribution4 = reinforcement.makeRebarDistributionLattice(rebshape2, cs1, name="Distribution5")
-rebdistribution5 = reinforcement.makeRebarDistributionLattice(rebshape2, cpa, name="Distribution6")
+rebdistribution3 = reinforcement.makeReinforcementLattice(rebshape2, la2, base_placement1, "Distribution3")
+rebdistribution3 = reinforcement.makeReinforcementLattice(rebshape2, pa1, name="Distribution4")
+rebdistribution4 = reinforcement.makeReinforcementLattice(rebshape2, cs1, name="Distribution5")
+rebdistribution5 = reinforcement.makeReinforcementLattice(rebshape2, cpa, name="Distribution6")
 FreeCAD.ActiveDocument.recompute()
 
 

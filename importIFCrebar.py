@@ -19,7 +19,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD min IFC importer based on Yorik van Havres IFC importer"
+__title__ = "FreeCAD rebar IFC importer based on Yorik van Havres IFC importer"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
@@ -129,7 +129,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
     rebars = ifcfile.by_type("IfcReinforcingBar")
     rebar_objs = []
     base_rebars = {}  # {rebar_mark_number : rebar_obj}
-    distribution_counter = 1
+    reinforcement_counter = 1
 
     # get the length scale facter because of  unit of the ifc file
     # new Allplan exporter uses milli meter
@@ -255,7 +255,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
             )
             print(base_placement)
 
-        # rebar distribution
+        # reinforcement made out of the imported rebar
         # coord placements
         vec_base_rebar = []
         for ifc_mapped_item in ifc_shape_representation.Items:
@@ -372,14 +372,14 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 for child in cpa.ViewObject.Proxy.claimChildren():
                     child.ViewObject.hide()
 
-        # reinforcement lattice2 distribution
-        reinforcement.makeRebarDistributionLattice(
+        # lattice2 reinforcement
+        reinforcement.makeReinforcementLattice(
             rebar_shape,
             lattice_placement,
             base_placement,
-            name="Distribution_No_"+str(distribution_counter)
+            name="Reinforcement_"+str(reinforcement_counter)
         )
-        distribution_counter += 1
+        reinforcement_counter += 1
 
         print("")
     FreeCAD.ActiveDocument.recompute()

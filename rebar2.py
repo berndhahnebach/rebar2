@@ -19,7 +19,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD rebar based on bar shape class and distribution class"
+__title__ = "FreeCAD rebar2 object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
@@ -203,7 +203,7 @@ class _RebarShape(Arch.ArchComponent.Component):
 
 class _ViewProviderRebarBase(Arch.ArchComponent.ViewProviderComponent):
 
-    """A View Provider for the rebar shape and rebar distribution object"""
+    """A View Provider for the rebar and reinforcement object"""
     # inherite this class and only use a different icon
     # color may be not brown, may be depending on diameter
 
@@ -360,12 +360,12 @@ class _ViewProviderRebarShape(_ViewProviderRebarBase):
         # special rebar shape children
         if hasattr(self, "Object"):
 
-            # claim distributions for this rebar shape
+            # claim reinforcements for this rebar
             for o in self.Object.Document.Objects:
                 # print(Draft.getType(o))
                 if (
-                    Draft.getType(o) == "RebarDistributionLattice"
-                    or Draft.getType(o) == "RebarDistribution"
+                    Draft.getType(o) == "ReinforcementLattice"
+                    or Draft.getType(o) == "Reinforcement"
                 ):
                     if o.BaseRebar == self.Object:
                         children.append(o)
