@@ -102,7 +102,6 @@ class _BaseRebar(Arch.ArchComponent.Component):
     have dozens of childreen, the reinforcements. The link between
     child and father is defined in the child. See _Reinforcement class.
     The base rebar should normally not be exported to IFC.
-    
 
     Known Attributes
     ----------------

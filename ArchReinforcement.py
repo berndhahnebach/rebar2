@@ -80,7 +80,46 @@ def makeReinforcement(
 
 class _Reinforcement(Arch.ArchComponent.Component):
 
-    "A reinforcement object based on a rebar object"
+    """
+    A reinforcement object based on a rebar object
+
+    Information
+    -----------
+    Placement list with the placements of each rebar is calculated.
+    A compound from all rebars is created. The compound it the reinforcement.
+    TODO: Create a reinforcement class especially for linear path
+    reinforcement. A wire and a distance or a count should be given
+    and the reinforcement will be created.
+    TODO: Create a reinforcement class especially for point reinforcement.
+    A list of vertieces will be given and the reinforcement will be created.
+
+    Who is child of who?
+    --------------------
+    Should the base rebar know all its reinforcements?
+    or
+    Should every reinforcement know its base rebar?
+    Use case: User would like to change the diameter of a reinforcement.
+    Diameter of the base rebar will be changed. All reinforcement changes.
+    If this is not wanted, a copy of the base rebar is made, the diameter
+    will be changed and the reinforcement is moved to the new base rebar.
+    In TreeView a base rebar has all reinforcements as children.
+    A reinforcement could be moved from one base rebar into another.
+    That makes sense but it does not make sense, but it does not the
+    other way around. If every reinforcement would have the rebar shape as
+    child it would be confusing. Really? Why not? It just would need some
+    list or group or whatever with all base rebars. TODO find out.
+
+    Additional Attributes
+    ---------------------
+    BaseRebar : App::PropertyLink
+        the rebar base object
+    RebarPlacements : App::PropertyPlacementList
+        Rlacement of each rebar of the reinforcement
+    BasePlacement : App::PropertyPlacement
+        on base rebar could be used in many reinforcements, but the rotations
+        might be different in the reinforcements. This placement is applied
+        relative to the placement in RebarPlacements.
+    """
 
     def __init__(
         self,

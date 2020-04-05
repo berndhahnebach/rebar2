@@ -19,6 +19,18 @@
 # *                                                                         *
 # ***************************************************************************
 
+"""
+Export:
+Only the reinforcement objs should be exported not the base rebar objs.
+https://forum.freecadweb.org/viewtopic.php?f=39&t=35848
+
+Import:
+If a mark number (Postion) exists, no new base rebar will be created.
+The existant base rebar which starts on 0, 0, 0 will be used.
+It would make sense to create all base rebars in x-y-plain
+
+"""
+
 __title__ = "FreeCAD rebar IFC importer based on Yorik van Havres IFC importer"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
