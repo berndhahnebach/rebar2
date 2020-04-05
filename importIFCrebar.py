@@ -126,9 +126,6 @@ def insert(filename, docname, skip=[], only=[], root=None):
     if root:
         ROOT_ELEMENT = root
 
-    # global ifcfile # keeping global for debugging purposes
-    filename = ifcdecode(filename, utf=True)
-    ifcfile = ifcopenshell.open(filename)
     from ifcopenshell import geom
     settings = ifcopenshell.geom.settings()
     settings.set(settings.USE_BREP_DATA, True)
@@ -138,48 +135,26 @@ def insert(filename, docname, skip=[], only=[], root=None):
     settings.set(settings.INCLUDE_CURVES, True)
     settings.set(settings.EXCLUDE_SOLIDS_AND_SURFACES, True)
 
-    rebars = ifcfile.by_type("IfcReinforcingBar")
+    # global ifcfile # keeping global for debugging purposes
+    filename = ifcdecode(filename, utf=True)
+    ifcfile = ifcopenshell.open(filename)
+
+    # get the length scale facter from of unit of the ifc file
+    length_scale = get_prj_unit_length_scale(ifcfile)
+    print("Length scale = {}\n".format(length_scale))
+
+    reinforcements = ifcfile.by_type("IfcReinforcingBar")
     rebar_objs = []
     base_rebars = {}  # {rebar_mark_number : rebar_obj}
     reinforcement_counter = 1
 
-    # get the length scale facter because of  unit of the ifc file
-    # new Allplan exporter uses milli meter
-    # old Allplan exporter uses meter
-    prj_units = ifcfile.by_type("IfcProject")[0].UnitsInContext.Units
-    length_scale = 1.0
-    found_length_unit = False
-    for u in prj_units:
-        if u.UnitType == "LENGTHUNIT":
-            if found_length_unit is False:
-                found_length_unit = True
-                # print(u.Prefix)
-                # print(u.Name)
-                if u.Prefix == "MILLI" and u.Name == "METRE":
-                    length_scale = 1.0
-                elif u.Prefix is None and u.Name == "METRE":
-                    length_scale = 1000  # convert meter into mille meter
-                else:
-                    print(
-                        "Not known length unit found, "
-                        "set attibute length scale to 1.0"
-                    )
-                    print(u)
-                    length_scale = 1.0
-            else:
-                print(
-                    "Two LENGTHUNIT defined, "
-                    "this is not allowed in IFC-Standard."
-                )
-    print("Length scale = {}\n".format(length_scale))
-
-    # rebars
-    for pno, rebar in enumerate(rebars):
+    # reinforcements
+    for pno, rebar in enumerate(reinforcements):
         pid = rebar.id()
         ptype = rebar.is_a()
         print("Product {} of {} is Entity #{}: {}, ".format(
             pno + 1,
-            len(rebars),
+            len(reinforcements),
             pid,
             ptype,
         ), end="", flush=True)
@@ -213,13 +188,12 @@ def insert(filename, docname, skip=[], only=[], root=None):
             )
             if (
                 pset == "Allplan_ReinforcingBar"
-                and pname == "Position number"
-            ):  # need to be Position here!
+                and pname == "Position number"  # need to be Position not Mark!
+            ):
                 rebar_mark_number = pvalue
         # print(rebar_mark_number)
         # print("")
-        # for debuging
-        # TODO some Parameter to only import certain mark numbers
+        # for debuging, TODO some Parameter to only import certain mark numbers
         # if rebar_mark_number != 3:
         #     continue
 
@@ -396,7 +370,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
 
         print("")
     FreeCAD.ActiveDocument.recompute()
-    # End rebars loop
+    # End reinforcements loop
 
     if FreeCAD.GuiUp:
         FreeCADGui.activeDocument().activeView().viewAxometric()
@@ -416,3 +390,35 @@ def get_relative_placement(shape1, shape2):
     pl1 = FreeCAD.Placement(plane1.Position, plane1.Rotation)
     pl2 = FreeCAD.Placement(plane2.Position, plane2.Rotation)
     return pl2.multiply(pl1.inverse())
+
+
+def get_prj_unit_length_scale(ifcfile):
+    # get the length scale facter from of unit of the ifc file
+    # new Allplan exporter uses milli meter
+    # old Allplan exporter uses meter
+    prj_units = ifcfile.by_type("IfcProject")[0].UnitsInContext.Units
+    length_scale = 1.0
+    found_length_unit = False
+    for u in prj_units:
+        if u.UnitType == "LENGTHUNIT":
+            if found_length_unit is False:
+                found_length_unit = True
+                # print(u.Prefix)
+                # print(u.Name)
+                if u.Prefix == "MILLI" and u.Name == "METRE":
+                    pass
+                elif u.Prefix is None and u.Name == "METRE":
+                    length_scale = 1000  # convert meter into mille meter
+                else:
+                    print(
+                        "Not known length unit found, "
+                        "set attibute length scale to 1.0"
+                    )
+                    print(u)
+            else:
+                print(
+                    "Two LENGTHUNIT defined, "
+                    "this is not allowed in IFC-Standard."
+                )
+    # print("Length scale = {}\n".format(length_scale))
+    return length_scale
