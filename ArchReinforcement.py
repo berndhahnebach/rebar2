@@ -71,6 +71,8 @@ def makeReinforcement(
     obj.BaseRebar = base_rebar
     obj.RebarPlacements = placements
     obj.BasePlacement = base_placement
+    obj.Amount = len(placements)
+    obj.TotalLength = obj.Amount * base_rebar.Length
 
     # mark base_rebar obj for recompute to make it collect its new child
     base_rebar.touch()
@@ -200,6 +202,28 @@ class _Reinforcement(Arch.ArchComponent.Component):
                 )
             )
 
+        # Amount
+        if "Amount" not in pl:
+            obj.addProperty(
+                "App::PropertyInteger",
+                "Amount",
+                "Reinforcement",
+                QT_TRANSLATE_NOOP("App::Property", ("The amount of rebars")),
+            )
+            obj.setEditorMode("Amount", 1)
+
+        # TotalLength
+        if "TotalLength" not in pl:
+            obj.addProperty(
+                "App::PropertyLength",
+                "TotalLength",
+                "Reinforcement",
+                QT_TRANSLATE_NOOP(
+                    "App::Property", ("The total length of all rebars")
+                ),
+            )
+            obj.setEditorMode("TotalLength", 1)
+
     def onDocumentRestored(
         self,
         obj
@@ -218,6 +242,8 @@ class _Reinforcement(Arch.ArchComponent.Component):
         if not obj.RebarPlacements:
             return
         self.build_shape(obj)
+        obj.Amount = len(obj.RebarPlacements)
+        obj.TotalLength = obj.Amount * obj.BaseRebar.Length
 
         # set Visibility of BaseRebar
         # this should be done in the Gui Command,
@@ -373,6 +399,8 @@ class _ReinforcementLattice(_Reinforcement):
             from lattice2BaseFeature import getPlacementsList as getpl
             obj.RebarPlacements = getpl(obj.LatticePlacement)
             self.build_shape(obj)
+            obj.Amount = len(obj.RebarPlacements)
+            obj.TotalLength = obj.Amount * obj.BaseRebar.Length
 
             # set Visibility of BaseRebar
             # this should be done in the Gui Command,

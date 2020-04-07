@@ -192,6 +192,19 @@ class _BaseRebar(Arch.ArchComponent.Component):
                     "The mark number of this rebar shape"
                 )
             )
+        # Length
+        if "Length" not in pl:
+            obj.addProperty(
+                "App::PropertyLength",
+                "Length",
+                "Rebar Shape",
+                QT_TRANSLATE_NOOP(
+                    "App::Property",
+                    "The length of this rebar shape"
+                )
+            )
+            obj.setEditorMode("Length", 1)
+
 
     def onDocumentRestored(
         self,
