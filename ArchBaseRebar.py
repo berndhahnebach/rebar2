@@ -205,7 +205,6 @@ class _BaseRebar(Arch.ArchComponent.Component):
             )
             obj.setEditorMode("Length", 1)
 
-
     def onDocumentRestored(
         self,
         obj
@@ -220,17 +219,53 @@ class _BaseRebar(Arch.ArchComponent.Component):
         if self.clone(obj):
             return
         if not obj.Base:
+            FreeCAD.Console.PrintError(
+                "No Base, return without a rebar shape for {}.\n"
+                .format(obj.Name)
+            )
             return
         if not obj.Base.Shape:
+            FreeCAD.Console.PrintError(
+                "No Shape in Base, return without a rebar shape for {}.\n"
+                .format(obj.Name)
+            )
             return
-        if not obj.Base.Shape.Wires:
+        if not obj.Base.Shape.Edges:
+            FreeCAD.Console.PrintError(
+                "No Edges in Shape of Base, "
+                "return without a rebar shape for {}.\n"
+                .format(obj.Name)
+            )
+            return
+        if obj.Base.Shape.Faces:
+            FreeCAD.Console.PrintError(
+                "Faces in Shape of Base, "
+                "return without a rebar shape for {}.\n"
+                .format(obj.Name)
+            )
             return
         if not obj.Diameter.Value:
+            FreeCAD.Console.PrintError(
+                "No diameter value, return without a rebar shape for {}.\n"
+                .format(obj.Name)
+            )
             return
         if not obj.MarkNumber:
+            FreeCAD.Console.PrintError(
+                "No mark number, return without a rebar shape for {}.\n"
+                .format(obj.Name)
+            )
             return
 
-        wire = obj.Base.Shape.Wires[0]
+        # corner cases:
+        #    compound from more Wires
+        #    compound without Wires but with multiple Edges
+        # Does they make sense? If yes handle them.
+        # Does it makes sense to handle Shapes with Faces or even Solids?
+        if not obj.Base.Shape.Wires and len(obj.Base.Shape.Edges) == 1:
+            wire = Part.Wire(obj.Base.Shape.Edges[0])
+        else:
+            wire = obj.Base.Shape.Wires[0]
         edge = wire.Edges[0]
         bpoint = edge.Vertexes[0].Point
         bvec = edge.tangentAt(edge.FirstParameter)
@@ -253,7 +288,7 @@ class _BaseRebar(Arch.ArchComponent.Component):
         try:
             obj.Shape = wire.makePipeShell([circle], True, False, 2)
         except Part.OCCError:
-            print("Arch: error sweeping rebar profile along the base sketch")
+            print("Arch: error sweeping rebar profile along the base geometry")
             return
 
 
