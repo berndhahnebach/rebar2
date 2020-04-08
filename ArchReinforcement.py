@@ -64,9 +64,9 @@ def makeReinforcement(
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
     obj.Label = translate("Arch", name)
 
-    _Reinforcement(obj)
+    Reinforcement(obj)
     if FreeCAD.GuiUp:
-        _ViewProviderReinforcement(obj.ViewObject)
+        ViewProviderReinforcement(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.RebarPlacements = placements
@@ -80,7 +80,7 @@ def makeReinforcement(
     return obj
 
 
-class _Reinforcement(Arch.ArchComponent.Component):
+class Reinforcement(Arch.ArchComponent.Component):
 
     """
     A reinforcement object based on a rebar object
@@ -113,7 +113,7 @@ class _Reinforcement(Arch.ArchComponent.Component):
 
     Module separation?
     -----------------_
-    Should _ReinforcementLattice in a separate module?
+    Should ReinforcementLattice in a separate module?
 
     Additional Attributes
     ---------------------
@@ -290,7 +290,7 @@ class _Reinforcement(Arch.ArchComponent.Component):
             obj.Shape = Part.makeCompound(shapes)
 
 
-class _ViewProviderReinforcement(ArchVPRebar._ViewProviderRebarCommon):
+class ViewProviderReinforcement(ArchVPRebar.ViewProviderRebarCommon):
 
     def getIcon(
         self
@@ -326,9 +326,9 @@ def makeReinforcementLattice(
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
     obj.Label = translate("Arch", name)
 
-    _ReinforcementLattice(obj)
+    ReinforcementLattice(obj)
     if FreeCAD.GuiUp:
-        _ViewProviderReinforcementLattice(obj.ViewObject)
+        ViewProviderReinforcementLattice(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.LatticePlacement = latice_obj
@@ -340,7 +340,7 @@ def makeReinforcementLattice(
     return obj
 
 
-class _ReinforcementLattice(_Reinforcement):
+class ReinforcementLattice(Reinforcement):
 
     """A reinforcement bar (rebar) object
     for a reinforcement based on a lattic2 placement"""
@@ -349,7 +349,7 @@ class _ReinforcementLattice(_Reinforcement):
         self,
         obj
     ):
-        _Reinforcement.__init__(self, obj)
+        Reinforcement.__init__(self, obj)
 
         # self.setPropertiesLattice(obj)
         # why the reinforcement properties should have been added ...
@@ -418,7 +418,7 @@ class _ReinforcementLattice(_Reinforcement):
             )
 
 
-class _ViewProviderReinforcementLattice(_ViewProviderReinforcement):
+class ViewProviderReinforcementLattice(ViewProviderReinforcement):
 
     def getIcon(
         self

@@ -35,7 +35,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 
 # ****************************************************************************
 # generic rebar and reinforcement ViewProvider
-class _ViewProviderRebarCommon(Arch.ArchComponent.ViewProviderComponent):
+class ViewProviderRebarCommon(Arch.ArchComponent.ViewProviderComponent):
 
     """A View Provider for the rebar and reinforcement object"""
     # inherite this class and only use a different icon

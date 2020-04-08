@@ -69,9 +69,9 @@ def makeBaseRebar(
     # may be set the label to the mark number
     # or even have an attribute which does it on any recompute
 
-    _BaseRebar(obj)
+    BaseRebar(obj)
     if FreeCAD.GuiUp:
-        _ViewProviderBaseRebar(obj.ViewObject)
+        ViewProviderBaseRebar(obj.ViewObject)
 
     obj.Base = base
     if FreeCAD.GuiUp:
@@ -90,7 +90,7 @@ def makeBaseRebar(
 
 
 # ****************************************************************************
-class _BaseRebar(Arch.ArchComponent.Component):
+class BaseRebar(Arch.ArchComponent.Component):
 
     """
     A base reinforcement bar (rebar) object for a rebar shape
@@ -101,7 +101,7 @@ class _BaseRebar(Arch.ArchComponent.Component):
     TODO bending roll radius, concrete cover, predefined rebar shapes.
     The object in TreeView has one child, its base and could
     have dozens of childreen, the reinforcements. The link between
-    child and father is defined in the child. See _Reinforcement class.
+    child and father is defined in the child. See Reinforcement class.
     The base rebar should normally not be exported to IFC.
 
     Known Attributes
@@ -293,7 +293,7 @@ class _BaseRebar(Arch.ArchComponent.Component):
 
 
 # ****************************************************************************
-class _ViewProviderBaseRebar(ArchVPRebar._ViewProviderRebarCommon):
+class ViewProviderBaseRebar(ArchVPRebar.ViewProviderRebarCommon):
 
     def getIcon(
         self
