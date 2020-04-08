@@ -140,7 +140,7 @@ class BaseRebar(Arch.ArchComponent.Component):
         self,
         obj
     ):
-        ArchComponent.Component.__init__(self, obj)
+        super(BaseRebar, self).__init__(obj)
         self.setProperties(obj)
         obj.IfcType = "Reinforcing Bar"
 
@@ -209,7 +209,7 @@ class BaseRebar(Arch.ArchComponent.Component):
         self,
         obj
     ):
-        ArchComponent.Component.onDocumentRestored(self, obj)
+        super().onDocumentRestored(self, obj)
         self.setProperties(obj)
 
     def execute(

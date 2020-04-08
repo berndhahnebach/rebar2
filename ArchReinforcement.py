@@ -131,7 +131,7 @@ class Reinforcement(Arch.ArchComponent.Component):
         self,
         obj
     ):
-        ArchComponent.Component.__init__(self, obj)
+        super(Reinforcement, self).__init__(obj)
         self.setProperties(obj)
         obj.IfcType = "Undefined"  # only set in rebar shape class
         obj.setEditorMode("IfcType", 2)
@@ -228,7 +228,7 @@ class Reinforcement(Arch.ArchComponent.Component):
         self,
         obj
     ):
-        ArchComponent.Component.onDocumentRestored(self, obj)
+        super().onDocumentRestored(self, obj)
         self.setProperties(obj)
 
     def execute(
@@ -349,7 +349,7 @@ class ReinforcementLattice(Reinforcement):
         self,
         obj
     ):
-        Reinforcement.__init__(self, obj)
+        super(ReinforcementLattice, self).__init__(obj)
 
         # self.setPropertiesLattice(obj)
         # why the reinforcement properties should have been added ...
@@ -378,12 +378,15 @@ class ReinforcementLattice(Reinforcement):
                 )
             )
 
+    """
+    # exact the same as in super class, thus not needed
     def onDocumentRestored(
         self,
         obj
     ):
-        ArchComponent.Component.onDocumentRestored(self, obj)
+        super().onDocumentRestored(obj)
         self.setProperties(obj)
+    """
 
     def execute(
         self,
