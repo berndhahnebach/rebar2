@@ -42,18 +42,16 @@ from FreeCAD import Vector as vec
 
 import Draft
 import Part
-
-import ArchBaseRebar
-import lattice2Executer
-import lattice2JoinArrays
-import lattice2LinearArray
-import lattice2Placement
-import ArchReinforcement
-
 from exportIFC import getPropertyData
 from importIFCHelper import decode as ifcdecode
 from importIFCHelper import getIfcProperties
 from importIFCHelper import getIfcPropertySets
+
+import archadd
+import lattice2Executer
+import lattice2JoinArrays
+import lattice2LinearArray
+import lattice2Placement
 
 if FreeCAD.GuiUp:
     import FreeCADGui
@@ -220,7 +218,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
         if rebar_mark_number not in base_rebars:
             # create a new rebar shape
             wire = Draft.makeWire(sweep_path.Wires[0])
-            rebar_shape = ArchBaseRebar.makeBaseRebar(
+            rebar_shape = archadd.makeBaseRebar(
                 wire,
                 diameter=2*radius,
                 mark=rebar_mark_number,
@@ -359,7 +357,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     child.ViewObject.hide()
 
         # lattice2 reinforcement
-        ArchReinforcement.makeReinforcementLattice(
+        archadd.makeReinforcementLattice(
             rebar_shape,
             lattice_placement,
             base_placement,

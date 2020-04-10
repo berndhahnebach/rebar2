@@ -24,10 +24,6 @@
 # put code in defs and use import to easily run the code
 # use for unit tests and documentation
 
-import importlib
-importlib.reload(ArchBaseRebar)
-importlib.reload(ArchReinforcement)
-
 
 # ************************************************************************************************
 # standard FreeCAD rebar *************************************************************************
@@ -62,15 +58,15 @@ FreeCAD.ActiveDocument.recompute()
 
 
 # ************************************************************************************************
-# ArchBaseRebar and ArchReinforcement ************************************************************
+# archadd and ArchReinforcement ************************************************************
 # ************************************************************************************************
 
 # ************************************************************************************************
 # reinforcment with base rebar, rebar placements created with Draft
-import FreeCAD, Arch, Draft, ArchBaseRebar, ArchReinforcement
+import FreeCAD, Arch, Draft, archadd
 from FreeCAD import Vector as vec
 wire1 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 1000)])
-baserebar1 = ArchBaseRebar.makeBaseRebar(wire1, diameter=100, mark=1, name="BaseRebar_1")
+baserebar1 = archadd.makeBaseRebar(wire1, diameter=100, mark=1, name="BaseRebar_1")
 FreeCAD.ActiveDocument.recompute()
 
 import DraftVecUtils
@@ -82,7 +78,7 @@ for i in range(10):
     barlocation = DraftVecUtils.scaleTo(FreeCAD.Base.Vector(1, 0, 0), move)
     pl_list.append(FreeCAD.Placement(barlocation, rot))
 
-rebdistribution1 = ArchReinforcement.makeReinforcement(baserebar1, pl_list, name="Reinforcement_1")
+rebdistribution1 = archadd.makeReinforcement(baserebar1, pl_list, name="Reinforcement_1")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -90,10 +86,10 @@ FreeCAD.ActiveDocument.recompute()
 # reinforcment with base rebar, rebar placement retrieved from a lattice2 placement
 # since only the placements of the lattice2 object are used,
 # the lattice2 object stays outside in tree view
-import FreeCAD, Arch, Draft, ArchBaseRebar, ArchReinforcement
+import FreeCAD, Arch, Draft, archadd
 from FreeCAD import Vector as vec
 wire3 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 2000)])
-baserebar3 = ArchBaseRebar.makeBaseRebar(wire3, diameter=30, mark=1, name="BaseRebar_2")
+baserebar3 = archadd.makeBaseRebar(wire3, diameter=30, mark=1, name="BaseRebar_2")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -115,16 +111,16 @@ FreeCAD.ActiveDocument.recompute()
 
 from lattice2BaseFeature import getPlacementsList as getpl
 # standard distributions, only the placments of the lattice2 use the placements, 
-rebdistribution2 = ArchReinforcement.makeReinforcement(baserebar3, placements=getpl(la1), name="Reinforcement_2")
+rebdistribution2 = archadd.makeReinforcement(baserebar3, placements=getpl(la1), name="Reinforcement_2")
 FreeCAD.ActiveDocument.recompute()
 
 
 # ************************************************************************************************
 # reinforcment with base rebar, rebar placements with lattice2 placement
-import FreeCAD, Arch, Draft, ArchBaseRebar, ArchReinforcement
+import FreeCAD, Arch, Draft, archadd
 from FreeCAD import Vector as vec
 wire2 = Draft.makeWire([vec(300, 0, 0), vec(0, 0, 0), vec(0, 0, 140), vec(300, 0, 140)])
-baserebar2 = ArchBaseRebar.makeBaseRebar(wire2, diameter=30, mark=2, name="BaseRebar_3")
+baserebar2 = archadd.makeBaseRebar(wire2, diameter=30, mark=2, name="BaseRebar_3")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -193,10 +189,10 @@ rotangle = 90  # degrees
 base_placement1 = FreeCAD.Placement(translation,FreeCAD.Rotation(rotaxis,rotangle))
 
 # lattice2 distribution
-rebdistribution3 = ArchReinforcement.makeReinforcementLattice(baserebar2, la2, base_placement1, "Reinforcement_3")
-rebdistribution3 = ArchReinforcement.makeReinforcementLattice(baserebar2, pa1, name="Reinforcement_4")
-rebdistribution4 = ArchReinforcement.makeReinforcementLattice(baserebar2, cs1, name="Reinforcement_5")
-rebdistribution5 = ArchReinforcement.makeReinforcementLattice(baserebar2, cpa, name="Reinforcement_6")
+rebdistribution3 = archadd.makeReinforcementLattice(baserebar2, la2, base_placement1, "Reinforcement_3")
+rebdistribution3 = archadd.makeReinforcementLattice(baserebar2, pa1, name="Reinforcement_4")
+rebdistribution4 = archadd.makeReinforcementLattice(baserebar2, cs1, name="Reinforcement_5")
+rebdistribution5 = archadd.makeReinforcementLattice(baserebar2, cpa, name="Reinforcement_6")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -206,25 +202,25 @@ FreeCAD.ActiveDocument.recompute()
 
 # ************************************************************************************************
 # bernd min geometry importer, geometry only as solids
-import importIFCmin, os, ArchBaseRebar
-path_to_ArchBaseRebar = ArchBaseRebar.__file__.rstrip(os.path.basename(ArchBaseRebar.__file__))
-importIFCmin.open(path_to_ArchBaseRebar + "example_01_two_stirrups.ifc")
+import importIFCmin, os, archadd
+path_to_importIFCrebar = archadd.__file__.rstrip(os.path.basename(archadd.__file__))
+importIFCmin.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
 
 
 # ************************************************************************************************
 # FreeCAD ifc importer
-import importIFC, os, ArchBaseRebar
-importIFC.open(path_to_ArchBaseRebar + "example_01_two_stirrups.ifc")
+import importIFC, os, archadd
+importIFC.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
 
 
 # ************************************************************************************************
-# rebar importer which usees ArchBaseRebar and ArchReinforcement
-import os, ArchBaseRebar, importIFCrebar
-path_to_ArchBaseRebar = ArchBaseRebar.__file__.rstrip(os.path.basename(ArchBaseRebar.__file__))
-importIFCrebar.open(path_to_ArchBaseRebar + "example_01_two_stirrups.ifc")
-# importIFCrebar.open(path_to_ArchBaseRebar + "example_02_channel_foundation.ifc")  # takes looong
-importIFCrebar.open(path_to_ArchBaseRebar + "example_03_crane_foundation.ifc")
-importIFCrebar.open(path_to_ArchBaseRebar + "example_04_vat.ifc")
+# rebar importer which usees rebar2
+import os, importIFCrebar
+path_to_importIFCrebar = importIFCrebar.__file__.rstrip(os.path.basename(importIFCrebar.__file__))
+importIFCrebar.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
+# importIFCrebar.open(path_to_importIFCrebar + "example_02_channel_foundation.ifc")  # takes looong
+importIFCrebar.open(path_to_importIFCrebar + "example_03_crane_foundation.ifc")
+importIFCrebar.open(path_to_importIFCrebar + "example_04_vat.ifc")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -232,6 +228,17 @@ FreeCAD.ActiveDocument.recompute()
 import importIFCrebar
 import importlib
 importlib.reload(importIFCrebar)
-importIFCrebar.open(path_to_ArchBaseRebar + "example_01_two_stirrups.ifc")
+importIFCrebar.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
 FreeCAD.ActiveDocument.recompute()
 
+"""
+flake8 archadd.py 
+flake8 archobjects/base_rebar.py
+flake8 archobjects/reinforcement.py
+flake8 archobjects/reinforcement_lattice.py 
+flake8 archgui/view_base_rebar.py 
+flake8 archgui/view_rebar_generic.py 
+flake8 archgui/view_reinforcement.py 
+flake8 archgui/view_reinforcement_lattice.py
+
+"""

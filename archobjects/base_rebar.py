@@ -25,72 +25,15 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-import Arch
 import ArchComponent
-import Draft
 import Part
 
-import ArchVPRebar
-
 if FreeCAD.GuiUp:
-    # import FreeCADGui
-    # from PySide import QtCore, QtGui
-    from DraftTools import translate
     from PySide.QtCore import QT_TRANSLATE_NOOP
-else:
-    # \cond
-    def translate(ctxt, txt):
-        return txt
-
-    def QT_TRANSLATE_NOOP(ctxt, txt):
-        return txt
-    # \endcond
 
 
 # ****************************************************************************
-def makeBaseRebar(
-    base,
-    diameter=None,
-    mark=None,
-    name="BaseRebar"
-):
-    """
-    makeBaseRebar(base, [diameter, mark, name]):
-    Adds a Reinforcement Bar object using the given base
-    (sketch or wire) as sweep path.
-    """
-
-    if not FreeCAD.ActiveDocument:
-        FreeCAD.Console.PrintError("No active document. Aborting\n")
-        return
-    p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
-    obj.Label = translate("Arch", name)
-    # may be set the label to the mark number
-    # or even have an attribute which does it on any recompute
-
-    BaseRebar(obj)
-    if FreeCAD.GuiUp:
-        ViewProviderBaseRebar(obj.ViewObject)
-
-    obj.Base = base
-    if FreeCAD.GuiUp:
-        base.ViewObject.hide()
-    if diameter:
-        obj.Diameter = diameter
-    else:
-        obj.Diameter = p.GetFloat("RebarDiameter", 6)
-    if mark:
-        obj.MarkNumber = mark
-    else:
-        obj.MarkNumber = 1
-
-    obj.Document.recompute()
-    return obj
-
-
-# ****************************************************************************
-class BaseRebar(Arch.ArchComponent.Component):
+class BaseRebar(ArchComponent.Component):
 
     """
     A base reinforcement bar (rebar) object for a rebar shape
@@ -290,97 +233,3 @@ class BaseRebar(Arch.ArchComponent.Component):
         except Part.OCCError:
             print("Arch: error sweeping rebar profile along the base geometry")
             return
-
-
-# ****************************************************************************
-class ViewProviderBaseRebar(ArchVPRebar.ViewProviderRebarCommon):
-
-    def getIcon(
-        self
-    ):
-        import Arch_rc
-        False if Arch_rc.__name__ else True  # dummy usage
-        return ":/icons/Arch_Pipe_Tree.svg"
-
-    def onDelete(self, feature, subelements):
-        try:
-            for o in self.claimChildren():
-                o.ViewObject.show()
-        except Exception:
-            FreeCAD.Console.PrintError("Error in onDelete: ")
-        return True
-
-    def claimChildren(
-        self
-    ):
-        # collect the children for TreeView
-
-        # children from Arch.Component
-        # since we overwrite the method we need to explicit call it
-        children = ArchComponent.ViewProviderComponent.claimChildren(self)
-
-        # special rebar shape children
-        if hasattr(self, "Object"):
-
-            # claim reinforcements for this rebar
-            for o in self.Object.Document.Objects:
-                # print(Draft.getType(o))
-                if (
-                    Draft.getType(o) == "ReinforcementLattice"
-                    or Draft.getType(o) == "Reinforcement"
-                ):
-                    if o.BaseRebar == self.Object:
-                        children.append(o)
-
-            # print(children)
-            return children
-        return children
-
-    # Drag and Drop for the children
-    """
-    # https://forum.freecadweb.org/viewtopic.php?f=10&t=28760
-    # https://forum.freecadweb.org/viewtopic.php?f=10&t=37632
-    # drag ... in German: ausschneiden, ziehen
-    # drop ... in German: loslassen, einfuegen, ablegen
-    """
-    # TODO !!!!!!!!!!!!!!!!!!!!!!
-    # it is possible to copy a reinforcement into another base rebar
-    # this should not be possible
-    # a reinforcement can only have one base rebar, see class reinforcement
-    def canDragObjects(self):
-        return True
-
-    def canDropObjects(self):
-        return True
-
-    def canDragObject(self, dragged_object):
-        if (
-            Draft.getType(dragged_object) == "ReinforcementLattice"
-            or Draft.getType(dragged_object) == "Reinforcement"
-        ):
-            return True
-        else:
-            return False
-
-    def canDropObject(self, incoming_object):
-        return True
-
-    def dragObject(self, selfvp, dragged_object):
-        if (
-            Draft.getType(dragged_object) == "ReinforcementLattice"
-            or Draft.getType(dragged_object) == "Reinforcement"
-        ):
-            dragged_object.BaseRebar = None
-            # mark the object we move out to recompute
-            selfvp.Object.touch()
-        FreeCAD.ActiveDocument.recompute()
-
-    def dropObject(self, selfvp, incoming_object):
-        if (
-            Draft.getType(incoming_object) == "ReinforcementLattice"
-            or Draft.getType(incoming_object) == "Reinforcement"
-        ):
-            incoming_object.BaseRebar = selfvp.Object
-            # mark the object we move in to recompute
-            selfvp.Object.touch()
-        FreeCAD.ActiveDocument.recompute()
