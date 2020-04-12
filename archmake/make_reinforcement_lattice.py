@@ -19,10 +19,50 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD arch add objects methods"
+__title__ = "FreeCAD arch make reinforcement lattice"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-from archmake.make_base_rebar import makeBaseRebar as BaseRebar
-from archmake.make_reinforcement import makeReinforcement as Reinforcement
-from archmake.make_reinforcement_lattice import makeReinforcementLattice as ReinforcementLattice
+import FreeCAD
+
+from DraftTools import translate
+
+
+def makeReinforcementLattice(
+    base_rebar,
+    latice_obj,
+    base_placement=FreeCAD.Placement(),
+    name="ReinforcementLattice"
+):
+    """
+    makeReinforcementLattice(base_rebar, placements, [base_placement], [name])
+    Adds a lattice reinforcement object.
+    """
+    from lattice2BaseFeature import isObjectLattice as islattice
+    if islattice(latice_obj) is not True:
+        FreeCAD.Console.PrintError(
+            "The object provided: {} is not a Lattice2 object\n"
+            .format(latice_obj.Name)
+        )
+        return None
+
+    if not FreeCAD.ActiveDocument:
+        FreeCAD.Console.PrintError("No active document. Aborting\n")
+        return
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
+    obj.Label = translate("Arch", name)
+
+    from archobjects.reinforcement_lattice import ReinforcementLattice
+    ReinforcementLattice(obj)
+    if FreeCAD.GuiUp:
+        from archviewproviders.view_reinforcement_lattice import ViewProviderReinforcementLattice
+        ViewProviderReinforcementLattice(obj.ViewObject)
+
+    obj.BaseRebar = base_rebar
+    obj.LatticePlacement = latice_obj
+    obj.BasePlacement = base_placement
+
+    # mark base_rebar obj for recompute to make it collect its new child
+    base_rebar.touch()
+    obj.Document.recompute()
+    return obj

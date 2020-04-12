@@ -218,7 +218,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
         if rebar_mark_number not in base_rebars:
             # create a new rebar shape
             wire = Draft.makeWire(sweep_path.Wires[0])
-            rebar_shape = archadd.makeBaseRebar(
+            rebar_shape = archadd.BaseRebar(
                 wire,
                 diameter=2*radius,
                 mark=rebar_mark_number,
@@ -357,7 +357,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     child.ViewObject.hide()
 
         # lattice2 reinforcement
-        archadd.makeReinforcementLattice(
+        archadd.ReinforcementLattice(
             rebar_shape,
             lattice_placement,
             base_placement,
