@@ -25,13 +25,13 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-from . reinforcement import Reinforcement
+from . reinforcement import ReinforcementGeneric
 
 if FreeCAD.GuiUp:
     from PySide.QtCore import QT_TRANSLATE_NOOP
 
 
-class ReinforcementLattice(Reinforcement):
+class ReinforcementLattice(ReinforcementGeneric):
 
     """A reinforcement bar (rebar) object
     for a reinforcement based on a lattic2 placement"""

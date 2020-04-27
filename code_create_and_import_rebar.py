@@ -78,7 +78,7 @@ for i in range(10):
     barlocation = DraftVecUtils.scaleTo(FreeCAD.Base.Vector(1, 0, 0), move)
     pl_list.append(FreeCAD.Placement(barlocation, rot))
 
-rebdistribution1 = archadd.Reinforcement(baserebar1, pl_list, name="Reinforcement_1")
+rebdistribution1 = archadd.ReinforcementGeneric(baserebar1, pl_list, name="Reinforcement_1")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -111,7 +111,7 @@ FreeCAD.ActiveDocument.recompute()
 
 from lattice2BaseFeature import getPlacementsList as getpl
 # standard distributions, only the placments of the lattice2 use the placements, 
-rebdistribution2 = archadd.Reinforcement(baserebar3, placements=getpl(la1), name="Reinforcement_2")
+rebdistribution2 = archadd.ReinforcementGeneric(baserebar3, placements=getpl(la1), name="Reinforcement_2")
 FreeCAD.ActiveDocument.recompute()
 
 

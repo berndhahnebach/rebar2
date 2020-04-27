@@ -19,10 +19,44 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD arch add objects methods"
+__title__ = "FreeCAD arch make generic reinforcement"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-from archmake.make_base_rebar import makeBaseRebar as BaseRebar
-from archmake.make_reinforcement_generic import makeReinforcementGeneric as ReinforcementGeneric
-from archmake.make_reinforcement_lattice import makeReinforcementLattice as ReinforcementLattice
+import FreeCAD
+
+from DraftTools import translate
+
+
+def makeReinforcementGeneric(
+    base_rebar,
+    placements=[],
+    base_placement=FreeCAD.Placement(),
+    name="Reinforcement"
+):
+    """
+    makeReinforcementGeneric(base_rebar, placements, [base_placement], [name])
+    Adds a generic reinforcement object.
+    """
+    if not FreeCAD.ActiveDocument:
+        FreeCAD.Console.PrintError("No active document. Aborting\n")
+        return
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
+    obj.Label = translate("Arch", name)
+
+    from archobjects.reinforcement_generic import ReinforcementGeneric
+    ReinforcementGeneric(obj)
+    if FreeCAD.GuiUp:
+        from archviewproviders.view_reinforcement_generic import ViewProviderReinforcementGeneric
+        ViewProviderReinforcementGeneric(obj.ViewObject)
+
+    obj.BaseRebar = base_rebar
+    obj.RebarPlacements = placements
+    obj.BasePlacement = base_placement
+    obj.Amount = len(placements)
+    obj.TotalLength = obj.Amount * base_rebar.Length
+
+    # mark base_rebar obj for recompute to make it collect its new child
+    base_rebar.touch()
+    obj.Document.recompute()
+    return obj

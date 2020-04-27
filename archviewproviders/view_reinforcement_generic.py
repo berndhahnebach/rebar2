@@ -19,10 +19,20 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD arch add objects methods"
+__title__ = "FreeCAD reinforcement view object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-from archmake.make_base_rebar import makeBaseRebar as BaseRebar
-from archmake.make_reinforcement_generic import makeReinforcementGeneric as ReinforcementGeneric
-from archmake.make_reinforcement_lattice import makeReinforcementLattice as ReinforcementLattice
+# import FreeCAD
+
+from .view_rebar_generic import ViewProviderRebarCommon
+
+
+class ViewProviderReinforcementGeneric(ViewProviderRebarCommon):
+
+    def getIcon(
+        self
+    ):
+        import Arch_rc
+        False if Arch_rc.__name__ else True  # dummy usage
+        return ":/icons/Arch_Rebar_Tree.svg"
