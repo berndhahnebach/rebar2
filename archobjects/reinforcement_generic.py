@@ -19,7 +19,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD reinforcement object"
+__title__ = "FreeCAD generic reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
@@ -35,7 +35,7 @@ if FreeCAD.GuiUp:
 class ReinforcementGeneric(ArchComponent.Component):
 
     """
-    A reinforcement object based on a rebar object
+    The generic reinforcement object based on a rebar object
 
     Information
     -----------
@@ -85,9 +85,7 @@ class ReinforcementGeneric(ArchComponent.Component):
     ):
         super(ReinforcementGeneric, self).__init__(obj)
         self.setProperties(obj)
-        obj.IfcType = "Undefined"  # only set in rebar shape class
-        obj.setEditorMode("IfcType", 2)
-        # obj.setEditorMode("PredefinedType", 2)  # attribute no longer used?
+        obj.IfcType = "Reinforcing Bar"
 
     def setProperties(
         self,

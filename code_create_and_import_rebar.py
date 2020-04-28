@@ -86,10 +86,10 @@ FreeCAD.ActiveDocument.recompute()
 # reinforcment with base rebar, rebar placement retrieved from a lattice2 placement
 # since only the placements of the lattice2 object are used,
 # the lattice2 object stays outside in tree view
-import FreeCAD, Arch, Draft, archadd
+import FreeCAD, Draft, archadd
 from FreeCAD import Vector as vec
-wire3 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 2000)])
-baserebar3 = archadd.BaseRebar(wire3, diameter=30, mark=1, name="BaseRebar_2")
+wire2 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 2000)])
+baserebar2 = archadd.BaseRebar(wire3, diameter=30, mark=2, name="BaseRebar_2")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -117,10 +117,10 @@ FreeCAD.ActiveDocument.recompute()
 
 # ************************************************************************************************
 # reinforcment with base rebar, rebar placements with lattice2 placement
-import FreeCAD, Arch, Draft, archadd
+import FreeCAD, Draft, archadd
 from FreeCAD import Vector as vec
-wire2 = Draft.makeWire([vec(300, 0, 0), vec(0, 0, 0), vec(0, 0, 140), vec(300, 0, 140)])
-baserebar2 = archadd.BaseRebar(wire2, diameter=30, mark=2, name="BaseRebar_3")
+wire3 = Draft.makeWire([vec(300, 0, 0), vec(0, 0, 0), vec(0, 0, 140), vec(300, 0, 140)])
+baserebar3 = archadd.BaseRebar(wire3, diameter=30, mark=3, name="BaseRebar_3")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -189,10 +189,10 @@ rotangle = 90  # degrees
 base_placement1 = FreeCAD.Placement(translation,FreeCAD.Rotation(rotaxis,rotangle))
 
 # lattice2 distribution
-rebdistribution3 = archadd.ReinforcementLattice(baserebar2, la2, base_placement1, "Reinforcement_3")
-rebdistribution3 = archadd.ReinforcementLattice(baserebar2, pa1, name="Reinforcement_4")
-rebdistribution4 = archadd.ReinforcementLattice(baserebar2, cs1, name="Reinforcement_5")
-rebdistribution5 = archadd.ReinforcementLattice(baserebar2, cpa, name="Reinforcement_6")
+rebdistribution3 = archadd.ReinforcementLattice(baserebar3, la2, base_placement1, "Reinforcement_3")
+rebdistribution3 = archadd.ReinforcementLattice(baserebar3, pa1, name="Reinforcement_4")
+rebdistribution4 = archadd.ReinforcementLattice(baserebar3, cs1, name="Reinforcement_5")
+rebdistribution5 = archadd.ReinforcementLattice(baserebar3, cpa, name="Reinforcement_6")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -231,14 +231,19 @@ importlib.reload(importIFCrebar)
 importIFCrebar.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
 FreeCAD.ActiveDocument.recompute()
 
+
+# flake8 archadd.py
 """
-flake8 archadd.py 
 flake8 archobjects/base_rebar.py
-flake8 archobjects/reinforcement.py
+flake8 archobjects/reinforcement_generic.py
 flake8 archobjects/reinforcement_lattice.py 
 flake8 archgui/view_base_rebar.py 
 flake8 archgui/view_rebar_generic.py 
-flake8 archgui/view_reinforcement.py 
+flake8 archgui/view_reinforcement_generic.py 
 flake8 archgui/view_reinforcement_lattice.py
+flake8 archmake/make_base_rebar.py 
+flake8 archmake/make_reinforcement_generic.py 
+flake8 archmake/make_reinforcement_lattice.py
+
 
 """

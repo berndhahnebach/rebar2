@@ -32,7 +32,7 @@ def makeReinforcementGeneric(
     base_rebar,
     placements=[],
     base_placement=FreeCAD.Placement(),
-    name="Reinforcement"
+    name="ReinforcementGeneric"
 ):
     """
     makeReinforcementGeneric(base_rebar, placements, [base_placement], [name])
@@ -41,14 +41,17 @@ def makeReinforcementGeneric(
     if not FreeCAD.ActiveDocument:
         FreeCAD.Console.PrintError("No active document. Aborting\n")
         return
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
+    obj = FreeCAD.ActiveDocument.addObject(
+        "Part::FeaturePython",
+        "ReinforcementGeneric"
+    )
     obj.Label = translate("Arch", name)
 
     from archobjects.reinforcement_generic import ReinforcementGeneric
     ReinforcementGeneric(obj)
     if FreeCAD.GuiUp:
-        from archviewproviders.view_reinforcement_generic import ViewProviderReinforcementGeneric
-        ViewProviderReinforcementGeneric(obj.ViewObject)
+        import archviewproviders.view_reinforcement_generic as view_generic
+        view_generic.ViewProviderReinforcementGeneric(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.RebarPlacements = placements

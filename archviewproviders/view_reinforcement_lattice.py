@@ -19,16 +19,16 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD reinforcement view object"
+__title__ = "FreeCAD lattice reinforcement view object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 import ArchComponent
 
-from .view_reinforcement import ViewProviderReinforcement
+from .view_reinforcement_generic import ViewProviderReinforcementGeneric
 
 
-class ViewProviderReinforcementLattice(ViewProviderReinforcement):
+class ViewProviderReinforcementLattice(ViewProviderReinforcementGeneric):
 
     def getIcon(
         self

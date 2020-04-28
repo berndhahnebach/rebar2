@@ -85,7 +85,8 @@ class BaseRebar(ArchComponent.Component):
     ):
         super(BaseRebar, self).__init__(obj)
         self.setProperties(obj)
-        obj.IfcType = "Reinforcing Bar"
+        obj.IfcType = "Undefined"  # only set in reinforcement
+        obj.setEditorMode("IfcType", 2)
 
     def setProperties(
         self,

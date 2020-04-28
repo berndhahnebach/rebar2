@@ -19,7 +19,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD reinforcement view object"
+__title__ = "FreeCAD generic reinforcement view object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

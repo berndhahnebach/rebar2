@@ -49,14 +49,17 @@ def makeReinforcementLattice(
     if not FreeCAD.ActiveDocument:
         FreeCAD.Console.PrintError("No active document. Aborting\n")
         return
-    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
+    obj = FreeCAD.ActiveDocument.addObject(
+        "Part::FeaturePython",
+        "ReinforcementLattice"
+    )
     obj.Label = translate("Arch", name)
 
     from archobjects.reinforcement_lattice import ReinforcementLattice
     ReinforcementLattice(obj)
     if FreeCAD.GuiUp:
-        from archviewproviders.view_reinforcement_lattice import ViewProviderReinforcementLattice
-        ViewProviderReinforcementLattice(obj.ViewObject)
+        import archviewproviders.view_reinforcement_lattice as view_lattice
+        view_lattice.ViewProviderReinforcementLattice(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.LatticePlacement = latice_obj
