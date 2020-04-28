@@ -237,10 +237,10 @@ FreeCAD.ActiveDocument.recompute()
 flake8 archobjects/base_rebar.py
 flake8 archobjects/reinforcement_generic.py
 flake8 archobjects/reinforcement_lattice.py 
-flake8 archgui/view_base_rebar.py 
-flake8 archgui/view_rebar_generic.py 
-flake8 archgui/view_reinforcement_generic.py 
-flake8 archgui/view_reinforcement_lattice.py
+flake8 archviewproviders/view_base_rebar.py 
+flake8 archviewproviders/view_rebar_generic.py 
+flake8 archviewproviders/view_reinforcement_generic.py 
+flake8 archviewproviders/view_reinforcement_lattice.py
 flake8 archmake/make_base_rebar.py 
 flake8 archmake/make_reinforcement_generic.py 
 flake8 archmake/make_reinforcement_lattice.py
