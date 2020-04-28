@@ -25,7 +25,7 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-from . reinforcement import ReinforcementGeneric
+from . reinforcement_generic import ReinforcementGeneric
 
 if FreeCAD.GuiUp:
     from PySide.QtCore import QT_TRANSLATE_NOOP

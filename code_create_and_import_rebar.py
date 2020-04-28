@@ -89,7 +89,7 @@ FreeCAD.ActiveDocument.recompute()
 import FreeCAD, Draft, archadd
 from FreeCAD import Vector as vec
 wire2 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 2000)])
-baserebar2 = archadd.BaseRebar(wire3, diameter=30, mark=2, name="BaseRebar_2")
+baserebar2 = archadd.BaseRebar(wire2, diameter=30, mark=2, name="BaseRebar_2")
 FreeCAD.ActiveDocument.recompute()
 
 # linear placements with lattice2
@@ -111,7 +111,7 @@ FreeCAD.ActiveDocument.recompute()
 
 from lattice2BaseFeature import getPlacementsList as getpl
 # standard distributions, only the placments of the lattice2 use the placements, 
-rebdistribution2 = archadd.ReinforcementGeneric(baserebar3, placements=getpl(la1), name="Reinforcement_2")
+rebdistribution2 = archadd.ReinforcementGeneric(baserebar2, placements=getpl(la1), name="Reinforcement_2")
 FreeCAD.ActiveDocument.recompute()
 
 
