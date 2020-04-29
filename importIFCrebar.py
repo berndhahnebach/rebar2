@@ -70,6 +70,10 @@ def getPreferences():
     FITVIEW_ONIMPORT = p.GetBool("ifcFitViewOnImport", False)
     DEBUG = True
 
+    # strandard will be no lattice placement for reinforcement
+    global REINFORCEMENT_LATTICE
+    REINFORCEMENT_LATTICE = p.GetBool("ifcReinforcmentType", False)
+    # REINFORCEMENT_LATTICE = True
 
 def open(filename, skip=[], only=[], root=None):
     "opens an IFC file in a new document"
@@ -295,7 +299,11 @@ def insert(filename, docname, skip=[], only=[], root=None):
         )
 
         marker_size = 25
-        if is_linear_distribution is True:
+        lattice_placement = None
+        if ( 
+            is_linear_distribution is True
+            and REINFORCEMENT_LATTICE is True
+        ):
             # linear lattice2 distribution
             print("Linear distribution found")
             # print(len(vec_base_rebar))
@@ -325,6 +333,27 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     .format(la.Count, len(vec_base_rebar))
                 )
             lattice_placement = la
+        if ( 
+            is_linear_distribution is True
+            and REINFORCEMENT_LATTICE is False
+        ):
+            # linear reinforcement
+            if space_one == 0:
+                continue  # handle a reinforcement with one rebar
+            amount = len(vec_base_rebar)
+            spacing = space_one.Length
+            # distance = (len(vec_base_rebar) - 1) * spacing
+
+            archadd.ReinforcementLinear(
+                rebar_shape,
+                amount=amount,
+                spacing=spacing,
+                direction=space_one,
+                base_placement=firstbar_pl.multiply(base_placement),
+                # name="Reinforcement_"+str(reinforcement_counter)
+                name="ReinforcementLinear_"+str(pid)
+            )
+
         else:
             # custom lattice placement for every rebar of this distribution
             print("custom distribution found")
@@ -343,30 +372,33 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 )
                 custom_pls.append(custom_pl)
 
-            # lattice array placement from custom lattice placements
-            cpa = lattice2JoinArrays.makeJoinArrays(
-                name="CustomPlacementArray"
+                # lattice array placement from custom lattice placements
+                cpa = lattice2JoinArrays.makeJoinArrays(
+                    name="CustomPlacementArray"
+                )
+                cpa.Links = custom_pls
+                cpa.MarkerSize = marker_size
+                lattice2Executer.executeFeature(cpa)
+                cpa.Placement = firstbar_pl
+                lattice_placement = cpa
+                if FreeCAD.GuiUp:
+                    for child in cpa.ViewObject.Proxy.claimChildren():
+                        child.ViewObject.hide()
+
+        if lattice_placement is not None:
+            # lattice2 reinforcement
+            archadd.ReinforcementLattice(
+                rebar_shape,
+                lattice_placement,
+                base_placement,
+                # name="Reinforcement_"+str(reinforcement_counter)
+                name="ReinforcementLattice_"+str(pid)
             )
-            cpa.Links = custom_pls
-            cpa.MarkerSize = marker_size
-            lattice2Executer.executeFeature(cpa)
-            cpa.Placement = firstbar_pl
-            lattice_placement = cpa
-            if FreeCAD.GuiUp:
-                for child in cpa.ViewObject.Proxy.claimChildren():
-                    child.ViewObject.hide()
 
-        # lattice2 reinforcement
-        archadd.ReinforcementLattice(
-            rebar_shape,
-            lattice_placement,
-            base_placement,
-            # name="Reinforcement_"+str(reinforcement_counter)
-            name="Reinforcement_"+str(pid)
-        )
+
         reinforcement_counter += 1
-
         print("")
+
     FreeCAD.ActiveDocument.recompute()
     # End reinforcements loop
 

@@ -197,6 +197,19 @@ FreeCAD.ActiveDocument.recompute()
 
 
 # ************************************************************************************************
+# reinforcment straight with base rebar
+# rebar placements calculated inside straight reinforcement from spacing and direction
+import FreeCAD, Draft, archadd
+from FreeCAD import Vector as vec
+wire1 = Draft.makeWire([vec(0, 0, 0), vec(3000, 0, 0)])
+baserebar4 = archadd.BaseRebar(wire1, diameter=30, mark=4, name="BaseRebar_4")
+FreeCAD.ActiveDocument.recompute()
+
+rebdistribution6 = archadd.ReinforcementLinear(baserebar4, amount=20, spacing=100, name="Reinforcement_6")
+FreeCAD.ActiveDocument.recompute()
+
+
+# ************************************************************************************************
 # ifc import *************************************************************************************
 # ************************************************************************************************
 
@@ -237,13 +250,16 @@ FreeCAD.ActiveDocument.recompute()
 flake8 archobjects/base_rebar.py
 flake8 archobjects/reinforcement_generic.py
 flake8 archobjects/reinforcement_lattice.py 
+flake8 archobjects/reinforcement_linear.py
 flake8 archviewproviders/view_base_rebar.py 
 flake8 archviewproviders/view_rebar_generic.py 
 flake8 archviewproviders/view_reinforcement_generic.py 
 flake8 archviewproviders/view_reinforcement_lattice.py
+flake8 archviewproviders/view_reinforcement_linear.py
 flake8 archmake/make_base_rebar.py 
 flake8 archmake/make_reinforcement_generic.py 
 flake8 archmake/make_reinforcement_lattice.py
+flake8 archmake/make_reinforcement_linear.py
 
 
 """
