@@ -157,7 +157,7 @@ class ReinforcementGeneric(ArchComponent.Component):
             obj.addProperty(
                 "App::PropertyInteger",
                 "Amount",
-                "Reinforcement",
+                "ArrayOfRebars",
                 QT_TRANSLATE_NOOP("App::Property", ("The amount of rebars")),
             )
             obj.setEditorMode("Amount", 1)

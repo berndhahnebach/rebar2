@@ -65,6 +65,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
                 # print(Draft.getType(o))
                 if (
                     Draft.getType(o) == "ReinforcementGeneric"
+                    or Draft.getType(o) == "ReinforcementLinear"
                     or Draft.getType(o) == "ReinforcementLattice"
                 ):
                     if o.BaseRebar == self.Object:
@@ -94,6 +95,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
     def canDragObject(self, dragged_object):
         if (
             Draft.getType(dragged_object) == "ReinforcementGeneric"
+            or Draft.getType(dragged_object) == "ReinforcementLinear"
             or Draft.getType(dragged_object) == "ReinforcementLattice"
         ):
             return True
@@ -106,6 +108,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
     def dragObject(self, selfvp, dragged_object):
         if (
             Draft.getType(dragged_object) == "ReinforcementGeneric"
+            or Draft.getType(dragged_object) == "ReinforcementLinear"
             or Draft.getType(dragged_object) == "ReinforcementLattice"
         ):
             dragged_object.BaseRebar = None
@@ -116,6 +119,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
     def dropObject(self, selfvp, incoming_object):
         if (
             Draft.getType(incoming_object) == "ReinforcementGeneric"
+            or Draft.getType(incoming_object) == "ReinforcementLinear"
             or Draft.getType(incoming_object) == "ReinforcementLattice"
         ):
             incoming_object.BaseRebar = selfvp.Object
