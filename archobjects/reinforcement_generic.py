@@ -175,7 +175,7 @@ class ReinforcementGeneric(ArchComponent.Component):
         self,
         obj
     ):
-        super().onDocumentRestored(self, obj)
+        ArchComponent.Component.onDocumentRestored(self, obj)
         self.setProperties(obj)
 
     def execute(

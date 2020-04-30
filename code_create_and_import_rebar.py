@@ -78,7 +78,7 @@ for i in range(10):
     barlocation = DraftVecUtils.scaleTo(FreeCAD.Base.Vector(1, 0, 0), move)
     pl_list.append(FreeCAD.Placement(barlocation, rot))
 
-rebdistribution1 = archadd.ReinforcementGeneric(baserebar1, pl_list, name="Reinforcement_1")
+archadd.ReinforcementGeneric(baserebar1, pl_list, name="Reinforcement_1")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -110,8 +110,8 @@ lattice2Executer.executeFeature(la1)
 FreeCAD.ActiveDocument.recompute()
 
 from lattice2BaseFeature import getPlacementsList as getpl
-# standard distributions, only the placments of the lattice2 use the placements, 
-rebdistribution2 = archadd.ReinforcementGeneric(baserebar2, placements=getpl(la1), name="Reinforcement_2")
+# standard reinforcement, only the placments of the lattice2 use the placements, 
+archadd.ReinforcementGeneric(baserebar2, placements=getpl(la1), name="Reinforcement_2")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -189,10 +189,10 @@ rotangle = 90  # degrees
 base_placement1 = FreeCAD.Placement(translation,FreeCAD.Rotation(rotaxis,rotangle))
 
 # lattice2 distribution
-rebdistribution3 = archadd.ReinforcementLattice(baserebar3, la2, base_placement1, "Reinforcement_3")
-rebdistribution3 = archadd.ReinforcementLattice(baserebar3, pa1, name="Reinforcement_4")
-rebdistribution4 = archadd.ReinforcementLattice(baserebar3, cs1, name="Reinforcement_5")
-rebdistribution5 = archadd.ReinforcementLattice(baserebar3, cpa, name="Reinforcement_6")
+archadd.ReinforcementLattice(baserebar3, la2, base_placement1, "Reinforcement_3")
+archadd.ReinforcementLattice(baserebar3, pa1, name="Reinforcement_4")
+archadd.ReinforcementLattice(baserebar3, cs1, name="Reinforcement_5")
+archadd.ReinforcementLattice(baserebar3, cpa, name="Reinforcement_6")
 FreeCAD.ActiveDocument.recompute()
 
 
@@ -201,10 +201,10 @@ FreeCAD.ActiveDocument.recompute()
 # rebar placements calculated inside linear reinforcement object based on its attributes
 import FreeCAD, Draft, archadd
 from FreeCAD import Vector as vec
-wire1 = Draft.makeWire([vec(0, 0, 0), vec(3000, 0, 0)])
-baserebar4 = archadd.BaseRebar(wire1, diameter=30, mark=4, name="BaseRebar_4")
+wire4 = Draft.makeWire([vec(0, 0, 0), vec(3000, 0, 0)])
+baserebar4 = archadd.BaseRebar(wire4, diameter=30, mark=4, name="BaseRebar_4")
 FreeCAD.ActiveDocument.recompute()
-rebdistribution6 = archadd.ReinforcementLinear(baserebar4, amount=20, spacing=100, name="Reinforcement_6")
+archadd.ReinforcementLinear(baserebar4, amount=20, spacing=100, name="Reinforcement_7")
 FreeCAD.ActiveDocument.recompute()
 
 

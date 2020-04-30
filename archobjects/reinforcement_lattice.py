@@ -69,16 +69,6 @@ class ReinforcementLattice(ReinforcementGeneric):
                 )
             )
 
-    """
-    # exact the same as in super class, thus not needed
-    def onDocumentRestored(
-        self,
-        obj
-    ):
-        super().onDocumentRestored(obj)
-        self.setProperties(obj)
-    """
-
     def execute(
         self,
         obj
