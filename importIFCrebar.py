@@ -75,6 +75,7 @@ def getPreferences():
     REINFORCEMENT_LATTICE = p.GetBool("ifcReinforcmentType", False)
     # REINFORCEMENT_LATTICE = True
 
+
 def open(filename, skip=[], only=[], root=None):
     "opens an IFC file in a new document"
     docname = os.path.splitext(os.path.basename(filename))[0]
@@ -241,7 +242,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 base_wire_obj.Shape,
                 sweep_path
             )
-            print(base_placement)
+            # print(base_placement)
 
         # reinforcement made out of the imported rebar
         # coord placements
@@ -300,7 +301,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
 
         marker_size = 25
         lattice_placement = None
-        if ( 
+        if (
             is_linear_distribution is True
             and REINFORCEMENT_LATTICE is True
         ):
@@ -333,7 +334,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     .format(la.Count, len(vec_base_rebar))
                 )
             lattice_placement = la
-        if ( 
+        if (
             is_linear_distribution is True
             and REINFORCEMENT_LATTICE is False
         ):
@@ -395,9 +396,8 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 name="ReinforcementLattice_"+str(pid)
             )
 
-
         reinforcement_counter += 1
-        print("")
+        # print("")
 
     FreeCAD.ActiveDocument.recompute()
     # End reinforcements loop

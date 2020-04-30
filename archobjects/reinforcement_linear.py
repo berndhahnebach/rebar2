@@ -49,8 +49,7 @@ class ReinforcementLinear(ReinforcementGeneric):
 
         pl = obj.PropertiesList
 
-        # TODO
-        # user should be able to change Amount in PropertyEditor
+        # user needs be able to change Amount in PropertyEditor
         obj.setEditorMode("Amount", 0)
         obj.Amount = 3
 
@@ -58,8 +57,7 @@ class ReinforcementLinear(ReinforcementGeneric):
 
         # direction
         # is not only direction but startpoint too
-        # TODO might be later given by a edge
-        # TODO and may be a length if not the edge length (Distance property)
+        # TODO might be later given by a straight edge
         if "Direction" not in pl:
             obj.addProperty(
                 "App::PropertyVector",
@@ -76,6 +74,7 @@ class ReinforcementLinear(ReinforcementGeneric):
         obj.Direction = FreeCAD.Vector(0, 0, 1)
 
         # length of the rebar distrbution
+        # later if we use a edge too, 0 indicates the use of the edge length
         if "Distance" not in pl:
             obj.addProperty(
                 "App::PropertyLength",

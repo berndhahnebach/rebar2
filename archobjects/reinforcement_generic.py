@@ -41,9 +41,6 @@ class ReinforcementGeneric(ArchComponent.Component):
     -----------
     Placement list with the placements of each rebar is calculated.
     A compound from all rebars is created. The compound it the reinforcement.
-    TODO: Create a reinforcement class especially for linear path
-    reinforcement. A wire and a distance or a count should be given
-    and the reinforcement will be created.
     TODO: Create a reinforcement class especially for point reinforcement.
     A list of vertieces will be given and the reinforcement will be created.
 
@@ -72,7 +69,7 @@ class ReinforcementGeneric(ArchComponent.Component):
     BaseRebar : App::PropertyLink
         the rebar base object
     RebarPlacements : App::PropertyPlacementList
-        Rlacement of each rebar of the reinforcement
+        Placement of each rebar of the reinforcement
     BasePlacement : App::PropertyPlacement
         on base rebar could be used in many reinforcements, but the rotations
         might be different in the reinforcements. This placement is applied
