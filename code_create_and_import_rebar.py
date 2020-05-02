@@ -207,6 +207,36 @@ FreeCAD.ActiveDocument.recompute()
 archadd.ReinforcementLinear(baserebar4, amount=20, spacing=100, name="Reinforcement_7")
 FreeCAD.ActiveDocument.recompute()
 
+# ************************************************************************************************
+# reinforcment individual with base rebar
+# rebar placements calculated inside individual reinforcement object based on linked vertieces
+import FreeCAD, Draft, archadd
+from FreeCAD import Vector as vec
+wire5 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 500)])
+baserebar5 = archadd.BaseRebar(wire5, diameter=14, mark=5, name="BaseRebar_5")
+doc = FreeCAD.ActiveDocument
+v1 = doc.addObject("Part::Vertex","Vertex1")
+v1.X = 300
+v1.Y = 150
+v1.Z = 200
+v1.ViewObject.PointColor=(1.0,0.7,0.0,0.0)
+v1.ViewObject.PointSize=20
+v2 = doc.addObject("Part::Vertex","Vertex2")
+v2.X = 200
+v2.Y = 100
+v2.Z = 50
+v2.ViewObject.PointColor=(1.0,0.7,0.0,0.0)
+v2.ViewObject.PointSize=20
+v3 = doc.addObject("Part::Vertex","Vertex3")
+v3.X = 400
+v3.Y = 250
+v3.Z = 100
+v3.ViewObject.PointColor=(1.0,0.7,0.0,0.0)
+v3.ViewObject.PointSize=20
+doc.recompute()
+archadd.ReinforcementIndividual(baserebar5, vertieces=[v1, v2, v3], name="Reinforcement_8")
+doc.recompute()
+
 
 # ************************************************************************************************
 # ifc import *************************************************************************************
@@ -251,15 +281,18 @@ flake8 archobjects/base_rebar.py
 flake8 archobjects/reinforcement_generic.py
 flake8 archobjects/reinforcement_lattice.py 
 flake8 archobjects/reinforcement_linear.py
+flake8 archobjects/reinforcement_individual.py
 flake8 archviewproviders/view_base_rebar.py 
 flake8 archviewproviders/view_rebar_generic.py 
 flake8 archviewproviders/view_reinforcement_generic.py 
 flake8 archviewproviders/view_reinforcement_lattice.py
 flake8 archviewproviders/view_reinforcement_linear.py
+flake8 archviewproviders/view_reinforcement_individual.py
 flake8 archmake/make_base_rebar.py 
 flake8 archmake/make_reinforcement_generic.py 
 flake8 archmake/make_reinforcement_lattice.py
 flake8 archmake/make_reinforcement_linear.py
+flake8 archmake/make_reinforcement_individual.py
 
 
 """

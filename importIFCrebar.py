@@ -335,30 +335,11 @@ def insert(filename, docname, skip=[], only=[], root=None):
                     .format(la.Count, len(vec_base_rebar))
                 )
             lattice_placement = la
-        if (
-            is_linear_distribution is True
-            and REINFORCEMENT_LATTICE is False
+        elif (
+            REINFORCEMENT_LATTICE is True
+            and is_linear_reinforcement is False
         ):
-            # linear std reinforcement
-            print("reinforcement: std linear")
-            if space_one == 0:
-                continue  # handle a reinforcement with one rebar
-            amount = len(vec_base_rebar)
-            spacing = space_one.Length
-            # distance = (len(vec_base_rebar) - 1) * spacing
-
-            archadd.ReinforcementLinear(
-                rebar_shape,
-                amount=amount,
-                spacing=spacing,
-                direction=space_one,
-                base_placement=firstbar_pl.multiply(base_placement),
-                # name="Reinforcement_"+str(reinforcement_counter)
-                name="ReinforcementLinear_"+str(pid)
-            )
-
-        else:
-            # custom lattice placement for every rebar of this distribution
+            # custom lattice placement for every rebar of this reinforcement
             print("reinforcement: custom lattice")
             custom_pls = []
             for co_vec in vec_base_rebar:
@@ -396,6 +377,52 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 base_placement,
                 # name="Reinforcement_"+str(reinforcement_counter)
                 name="ReinforcementLattice_"+str(pid)
+            )
+
+        if (
+            REINFORCEMENT_LATTICE is False
+            and is_linear_reinforcement is True
+        ):
+            # linear reinforcement
+            print("reinforcement: linear std")
+            if space_one == 0:
+                # TODO handle a reinforcement with one rebar
+                # this should not be a linear reinforcement
+                continue
+            amount = len(vec_base_rebar)
+            spacing = space_one.Length
+            # distance = (len(vec_base_rebar) - 1) * spacing
+
+            archadd.ReinforcementLinear(
+                rebar_shape,
+                amount=amount,
+                spacing=spacing,
+                direction=space_one,
+                base_placement=firstbar_pl.multiply(base_placement),
+                # name="Reinforcement_"+str(reinforcement_counter)
+                name="ReinforcementLinear_"+str(pid)
+            )
+        elif (
+            REINFORCEMENT_LATTICE is False
+            and is_linear_reinforcement is False
+        ):
+            # individual reinforcement
+            print("reinforcement: individual std")
+            vertieces = []
+            for co in vec_base_rebar:
+                v_placement_lok = FreeCAD.Placement(co, FreeCAD.Rotation())
+                v_placement_glob = v_placement_lok.multiply(firstbar_pl)
+                v = doc.addObject("Part::Vertex","Vertex1")
+                v_vec = v_placement_glob.Base
+                v.X, v.Y, v.Z = v_vec.x, v_vec.y, v_vec.z,
+                v.ViewObject.PointColor = (1.0, 0.7, 0.0, 0.0)
+                v.ViewObject.PointSize = 15
+                vertieces.append(v)   
+            archadd.ReinforcementIndividual(
+                rebar_shape,
+                vertieces=vertieces,
+                base_placement=base_placement,
+                name="ReinforcementIndividual_"+str(pid)
             )
 
         reinforcement_counter += 1

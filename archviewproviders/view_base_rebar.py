@@ -67,6 +67,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
                     Draft.getType(o) == "ReinforcementGeneric"
                     or Draft.getType(o) == "ReinforcementLinear"
                     or Draft.getType(o) == "ReinforcementLattice"
+                    or Draft.getType(o) == "ReinforcementIndividual"
                 ):
                     if o.BaseRebar == self.Object:
                         children.append(o)
@@ -97,6 +98,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
             Draft.getType(dragged_object) == "ReinforcementGeneric"
             or Draft.getType(dragged_object) == "ReinforcementLinear"
             or Draft.getType(dragged_object) == "ReinforcementLattice"
+            or Draft.getType(dragged_object) == "ReinforcementIndividual"
         ):
             return True
         else:
@@ -110,6 +112,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
             Draft.getType(dragged_object) == "ReinforcementGeneric"
             or Draft.getType(dragged_object) == "ReinforcementLinear"
             or Draft.getType(dragged_object) == "ReinforcementLattice"
+            or Draft.getType(dragged_object) == "ReinforcementIndividual"
         ):
             dragged_object.BaseRebar = None
             # mark the object we move out to recompute
@@ -121,6 +124,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
             Draft.getType(incoming_object) == "ReinforcementGeneric"
             or Draft.getType(incoming_object) == "ReinforcementLinear"
             or Draft.getType(incoming_object) == "ReinforcementLattice"
+            or Draft.getType(incoming_object) == "ReinforcementIndividual"
         ):
             incoming_object.BaseRebar = selfvp.Object
             # mark the object we move in to recompute

@@ -19,12 +19,47 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD arch add objects methods"
+__title__ = "FreeCAD arch make reinforcement individual"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-from archmake.make_base_rebar import makeBaseRebar as BaseRebar
-from archmake.make_reinforcement_generic import makeReinforcementGeneric as ReinforcementGeneric
-from archmake.make_reinforcement_lattice import makeReinforcementLattice as ReinforcementLattice
-from archmake.make_reinforcement_linear import makeReinforcementLinear as ReinforcementLinear
-from archmake.make_reinforcement_individual import makeReinforcementIndividual as ReinforcementIndividual
+import FreeCAD
+
+from DraftTools import translate
+
+
+def makeReinforcementIndividual(
+    base_rebar,
+    vertieces,
+    base_placement=FreeCAD.Placement(),
+    name="ReinforcementIndividual"
+):
+    """
+    makeReinforcementIndividual(base_rebar, vertieces, [base_placement], [name])
+    Adds a individual reinforcement object.
+    """
+
+    if not FreeCAD.ActiveDocument:
+        FreeCAD.Console.PrintError("No active document. Aborting\n")
+        return
+
+    obj = FreeCAD.ActiveDocument.addObject(
+        "Part::FeaturePython",
+        "ReinforcementIndividual"
+    )
+    obj.Label = translate("Arch", name)
+
+    from archobjects.reinforcement_individual import ReinforcementIndividual
+    ReinforcementIndividual(obj)
+    if FreeCAD.GuiUp:
+        import archviewproviders.view_reinforcement_individual as view_individual
+        view_individual.ViewProviderReinforcementIndividual(obj.ViewObject)
+
+    obj.BaseRebar = base_rebar
+    obj.Vertieces = vertieces
+    obj.BasePlacement = base_placement
+
+    # mark base_rebar obj for recompute to make it collect its new child
+    base_rebar.touch()
+    obj.Document.recompute()
+    return obj
