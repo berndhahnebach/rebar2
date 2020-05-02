@@ -155,7 +155,7 @@ lattice2Executer.executeFeature(pa1)
 
 # custom single placement with lattice2
 import lattice2Placement, lattice2JoinArrays, lattice2Executer
-cs1 = lattice2Placement.makeLatticePlacement(name="CustomSingelPlacment1")
+cs1 = lattice2Placement.makeLatticePlacement(name="CustomSinglePlacement1")
 cs1.PlacementChoice = "Custom"
 cs1.MarkerSize = 100
 lattice2Executer.executeFeature(cs1)
@@ -163,7 +163,7 @@ cs1.Placement=FreeCAD.Placement(vec(0,10000,1000), FreeCAD.Rotation(vec(0,0,1),0
 
 # custom array placement with lattice2
 import lattice2Placement, lattice2JoinArrays, lattice2Executer
-ca1 = lattice2Placement.makeLatticePlacement(name="CustomPlacmentForArray1")
+ca1 = lattice2Placement.makeLatticePlacement(name="CustomPlacementForArray1")
 ca1.PlacementChoice = "Custom"
 ca1.MarkerSize = 100
 lattice2Executer.executeFeature(ca1)

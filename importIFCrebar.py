@@ -230,6 +230,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 name="BaseRebar_Mark_"+str(rebar_mark_number)
             )
             rebar_shape.IfcProperties = ifc_properties
+            print("based on: {}, ".format(wire.Name), end="")
             rebar_objs.append(rebar_shape)
             base_rebars[rebar_mark_number] = rebar_shape
         else:
@@ -237,7 +238,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
             # the base wire (the one in base_rebars already)
             # the sweep_path
             base_wire_obj = base_rebars[rebar_mark_number].Base
-            print(base_wire_obj.Name)
+            print("based on: {}, ".format(base_wire_obj.Name), end="")
             base_placement = get_relative_placement(
                 base_wire_obj.Shape,
                 sweep_path
@@ -258,8 +259,8 @@ def insert(filename, docname, skip=[], only=[], root=None):
             vec_base_rebar.append(co_vec)
         # print("\n{}".format(vec_base_rebar))
 
-        # check if we have a linear distribution
-        is_linear_distribution = False
+        # check if we have a linear reinforcement
+        is_linear_reinforcement = False
         space_one = 0
         if len(vec_base_rebar) > 1:
             # edge from first point to last point
@@ -283,9 +284,9 @@ def insert(filename, docname, skip=[], only=[], root=None):
                         # 2 mm, much better would be some dimensionless value
                         break
             else:
-                is_linear_distribution = True
+                is_linear_reinforcement = True
 
-        # get placement for first distribution bar
+        # get placement for first reinforcement bar
         relplacement_firstbar = rebar.ObjectPlacement.RelativePlacement
         coord_firstbar = relplacement_firstbar.Location.Coordinates
         vec_firstbar = vec(
@@ -302,11 +303,11 @@ def insert(filename, docname, skip=[], only=[], root=None):
         marker_size = 25
         lattice_placement = None
         if (
-            is_linear_distribution is True
-            and REINFORCEMENT_LATTICE is True
+            REINFORCEMENT_LATTICE is True
+            and is_linear_reinforcement is True
         ):
-            # linear lattice2 distribution
-            print("Linear distribution found")
+            # linear lattice reinforcement
+            print("reinforcement: linear lattice")
             # print(len(vec_base_rebar))
             # print(space_one)
             space_length = space_one.Length
@@ -338,7 +339,8 @@ def insert(filename, docname, skip=[], only=[], root=None):
             is_linear_distribution is True
             and REINFORCEMENT_LATTICE is False
         ):
-            # linear reinforcement
+            # linear std reinforcement
+            print("reinforcement: std linear")
             if space_one == 0:
                 continue  # handle a reinforcement with one rebar
             amount = len(vec_base_rebar)
@@ -357,7 +359,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
 
         else:
             # custom lattice placement for every rebar of this distribution
-            print("custom distribution found")
+            print("reinforcement: custom lattice")
             custom_pls = []
             for co_vec in vec_base_rebar:
                 custom_pl = lattice2Placement.makeLatticePlacement(
