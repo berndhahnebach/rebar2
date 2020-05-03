@@ -90,6 +90,7 @@ class ReinforcementIndividual(ReinforcementGeneric):
         obj.RebarPlacements = pl_list
 
         self.build_shape(obj)
+        obj.Amount = len(obj.RebarPlacements)
         obj.TotalLength = obj.Amount * obj.BaseRebar.Length
 
         # set Visibility of BaseRebar
