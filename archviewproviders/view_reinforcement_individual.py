@@ -48,8 +48,9 @@ class ViewProviderReinforcementIndividual(ViewProviderReinforcementGeneric):
 
         # reinforcement individual children
         if hasattr(self, "Object"):
-            return self.Object.Vertieces
-        return []
+            return children + self.Object.Vertieces
+        else:
+            return children
 
     # Drag and Drop for the children
     # TODO: implement Drag and Drop

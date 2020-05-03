@@ -412,12 +412,12 @@ def insert(filename, docname, skip=[], only=[], root=None):
             for co in vec_base_rebar:
                 v_placement_lok = FreeCAD.Placement(co, FreeCAD.Rotation())
                 v_placement_glob = v_placement_lok.multiply(firstbar_pl)
-                v = doc.addObject("Part::Vertex","Vertex1")
+                v = doc.addObject("Part::Vertex", "Vertex1")
                 v_vec = v_placement_glob.Base
                 v.X, v.Y, v.Z = v_vec.x, v_vec.y, v_vec.z,
                 v.ViewObject.PointColor = (1.0, 0.7, 0.0, 0.0)
                 v.ViewObject.PointSize = 15
-                vertieces.append(v)   
+                vertieces.append(v)
             archadd.ReinforcementIndividual(
                 rebar_shape,
                 vertieces=vertieces,

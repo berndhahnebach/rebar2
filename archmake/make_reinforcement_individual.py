@@ -35,7 +35,12 @@ def makeReinforcementIndividual(
     name="ReinforcementIndividual"
 ):
     """
-    makeReinforcementIndividual(base_rebar, vertieces, [base_placement], [name])
+    makeReinforcementIndividual(
+        base_rebar,
+        vertieces,
+        [base_placement],
+        [name]
+    )
     Adds a individual reinforcement object.
     """
 
@@ -52,8 +57,8 @@ def makeReinforcementIndividual(
     from archobjects.reinforcement_individual import ReinforcementIndividual
     ReinforcementIndividual(obj)
     if FreeCAD.GuiUp:
-        import archviewproviders.view_reinforcement_individual as view_individual
-        view_individual.ViewProviderReinforcementIndividual(obj.ViewObject)
+        import archviewproviders.view_reinforcement_individual as v_individual
+        v_individual.ViewProviderReinforcementIndividual(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
     obj.Vertieces = vertieces
