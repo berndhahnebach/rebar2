@@ -237,6 +237,18 @@ doc.recompute()
 archadd.ReinforcementIndividual(baserebar5, vertieces=[v1, v2, v3], name="Reinforcement_8")
 doc.recompute()
 
+# ************************************************************************************************
+# reinforcment cusotm with base rebar
+# rebar placements calculated inside custom reinforcement object based on custom spacing
+import FreeCAD, Draft, archadd
+from FreeCAD import Vector as vec
+wire6 = Draft.makeWire([vec(0, 0, 0), vec(0, 1000, 0)])
+baserebar6 = archadd.BaseRebar(wire6, diameter=30, mark=6, name="BaseRebar_6")
+FreeCAD.ActiveDocument.recompute()
+custom = "5@100+10@200+5@100"
+archadd.ReinforcementCustom(baserebar6, custom, name="Reinforcement_9")
+FreeCAD.ActiveDocument.recompute()
+
 
 # ************************************************************************************************
 # ifc import *************************************************************************************
@@ -278,17 +290,20 @@ FreeCAD.ActiveDocument.recompute()
 """
 flake8 importIFCrebar.py
 flake8 archobjects/base_rebar.py
+flake8 archobjects/reinforcement_custom.py
 flake8 archobjects/reinforcement_generic.py
 flake8 archobjects/reinforcement_lattice.py 
 flake8 archobjects/reinforcement_linear.py
 flake8 archobjects/reinforcement_individual.py
 flake8 archviewproviders/view_base_rebar.py 
 flake8 archviewproviders/view_rebar_generic.py 
+flake8 archviewproviders/view_reinforcement_custom.py 
 flake8 archviewproviders/view_reinforcement_generic.py 
 flake8 archviewproviders/view_reinforcement_lattice.py
 flake8 archviewproviders/view_reinforcement_linear.py
 flake8 archviewproviders/view_reinforcement_individual.py
 flake8 archmake/make_base_rebar.py 
+flake8 archmake/make_reinforcement_custom.py 
 flake8 archmake/make_reinforcement_generic.py 
 flake8 archmake/make_reinforcement_lattice.py
 flake8 archmake/make_reinforcement_linear.py

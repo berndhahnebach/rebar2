@@ -19,13 +19,58 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD arch add objects methods"
+__title__ = "FreeCAD arch make reinforcement custom"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-from archmake.make_base_rebar import makeBaseRebar as BaseRebar
-from archmake.make_reinforcement_custom import makeReinforcementCustom as ReinforcementCustom
-from archmake.make_reinforcement_generic import makeReinforcementGeneric as ReinforcementGeneric
-from archmake.make_reinforcement_lattice import makeReinforcementLattice as ReinforcementLattice
-from archmake.make_reinforcement_linear import makeReinforcementLinear as ReinforcementLinear
-from archmake.make_reinforcement_individual import makeReinforcementIndividual as ReinforcementIndividual
+import FreeCAD
+from FreeCAD import Vector as vec
+
+from DraftTools import translate
+
+# see linear
+
+
+def makeReinforcementCustom(
+    base_rebar,
+    custom_spacing,
+    direction=vec(0, 0, 1),
+    base_placement=FreeCAD.Placement(),
+    name="ReinforcementCustom"
+):
+    """
+    makeReinforcementCustom(
+        base_rebar,
+        customspacing,
+        [base_placement],
+        [name]
+    )
+    Adds a custom reinforcement object.
+    """
+
+    if not FreeCAD.ActiveDocument:
+        FreeCAD.Console.PrintError("No active document. Aborting\n")
+        return
+
+    obj = FreeCAD.ActiveDocument.addObject(
+        "Part::FeaturePython",
+        "ReinforcementCustom"
+    )
+    obj.Label = translate("Arch", name)
+
+    from archobjects.reinforcement_custom import ReinforcementCustom
+    ReinforcementCustom(obj)
+    if FreeCAD.GuiUp:
+        import archviewproviders.view_reinforcement_custom as view_custom
+        view_custom.ViewProviderReinforcementCustom(obj.ViewObject)
+
+    obj.BaseRebar = base_rebar
+    obj.CustomSpacing = custom_spacing
+    obj.BasePlacement = base_placement
+    obj.Direction = direction
+    obj.Document.recompute()
+
+    # mark base_rebar obj for recompute to make it collect its new child
+    base_rebar.touch()
+    obj.Document.recompute()
+    return obj
