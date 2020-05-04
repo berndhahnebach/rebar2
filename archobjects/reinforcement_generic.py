@@ -73,7 +73,10 @@ class ReinforcementGeneric(ArchComponent.Component):
     BasePlacement : App::PropertyPlacement
         on base rebar could be used in many reinforcements, but the rotations
         might be different in the reinforcements. This placement is applied
-        relative to the placement in RebarPlacements.
+        relative to each placement in RebarPlacements. Thus it is important
+        for rotations only, because each rebar is rotatated instead of the
+        whole reinforcement if applied in Placement attribute. A translation
+        could be applied eitheron BasePlacement or Placement attribute.
     """
 
     def __init__(
@@ -147,6 +150,18 @@ class ReinforcementGeneric(ArchComponent.Component):
                         "the reinforcement (Yaw-Pitch-Roll)"
                     )
                 )
+            )
+
+        # Host
+        if "Host" not in pl:
+            obj.addProperty(
+                "App::PropertyLink",
+                "Host",
+                "Reinforcement",
+                QT_TRANSLATE_NOOP(
+                    "App::Property",
+                    "The structure object that hosts this rebar"
+                    )
             )
 
         # Amount
