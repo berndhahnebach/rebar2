@@ -19,7 +19,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-# code for debuging and implementation of rebar ifc importer
+# code for debugging and implementation of rebar ifc importer
 # code to copy for rebar import
 # may be there are some HACK s
 # there have been takes place renamming and moving methods and class
@@ -140,7 +140,7 @@ for u in prj_units:
             elif u.Prefix is None and u.Name == "METRE":
                 scale_length = 0.001
             else:
-                print("Not known length unit found, set attibute length scale to 1.0")
+                print("Not known length unit found, set attribute length scale to 1.0")
                 print(u)
                 scale_length = 1.0
         else:

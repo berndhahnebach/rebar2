@@ -147,9 +147,13 @@ class ReinforcementCustom(ReinforcementGeneric):
             return
         # should we check for more Attributes?
 
+        from ArchRebar import CustomSpacingPlacement
+        from ArchRebar import strprocessOfCustomSpacing
+
         if obj.CustomSpacing:
-            spacinglist = ArchRebar.strprocessOfCustomSpacing(obj.CustomSpacing)
-            influenceArea = sum(spacinglist) - spacinglist[0] / 2 - spacinglist[-1] / 2
+            spacinglist = strprocessOfCustomSpacing(obj.CustomSpacing)
+            borderInfluenceArea = spacinglist[0] / 2 + spacinglist[-1] / 2
+            influenceArea = sum(spacinglist) - borderInfluenceArea
 
         if not DraftVecUtils.isNull(obj.Direction):
             axis = FreeCAD.Vector(obj.Direction)
@@ -161,14 +165,16 @@ class ReinforcementCustom(ReinforcementGeneric):
         placementlist = []
         if spacinglist:
             placementlist[:] = []
-            reqInfluenceArea = size - (obj.OffsetStart.Value + obj.OffsetEnd.Value)
+            con_cover = obj.OffsetStart.Value + obj.OffsetEnd.Value
+            reqInfluenceArea = size - con_cover
             """
             if obj.ViewObject.RebarShape == "Stirrup":
-                reqInfluenceArea = size - (obj.OffsetStart.Value + obj.OffsetEnd.Value + obj.Diameter.Value)
+                reqInfluenceArea = size - con_cover - obj.Diameter.Value
             else:
-                reqInfluenceArea = size - (obj.OffsetStart.Value + obj.OffsetEnd.Value)
+                reqInfluenceArea = size - con_cover
             """
-            # Avoid unnecessary checks to pass like. For eg.: when we have values
+            # Avoid unnecessary checks to pass like.
+            # For eg.: when we have values
             # like influenceArea is 100.00001 and reqInflueneArea is 100
             if round(influenceArea) > round(reqInfluenceArea):
                 FreeCAD.Console.PrintWarning(
@@ -177,11 +183,11 @@ class ReinforcementCustom(ReinforcementGeneric):
                 )
             elif round(influenceArea) < round(reqInfluenceArea):
                 FreeCAD.Console.PrintWarning(
-                    "Last span is greater that end offset.\n"
+                    "Last span is greater than end offset.\n"
                 )
             for i in range(len(spacinglist)):
                 if i == 0:
-                    barplacement = ArchRebar.CustomSpacingPlacement(
+                    barplacement = CustomSpacingPlacement(
                         spacinglist,
                         1,
                         axis,

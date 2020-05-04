@@ -25,8 +25,8 @@ Only the reinforcement objs should be exported not the base rebar objs.
 https://forum.freecadweb.org/viewtopic.php?f=39&t=35848
 
 Import:
-If a mark number (Postion) exists, no new base rebar will be created.
-The existant base rebar which starts on 0, 0, 0 will be used.
+If a mark number (Position) exists, no new base rebar will be created.
+The existent base rebar which starts on 0, 0, 0 will be used.
 It would make sense to create all base rebars in x-y-plain
 
 """
@@ -196,7 +196,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 rebar_mark_number = pvalue
         # print(rebar_mark_number)
         # print("")
-        # for debuging, TODO some Parameter to only import certain mark numbers
+        # for debugging, TODO some Parameter to only import certain mark numbers
         # if rebar_mark_number != 3:
         #     continue
 
@@ -442,7 +442,7 @@ def get_relative_placement(shape1, shape2):
     """returns the placement that must be
     applied to shape1 to move it to shape_2"""
     # https://forum.freecadweb.org/viewtopic.php?f=22&t=44880
-    # Assuming that the first 3 vertexes of the shape
+    # Assuming that the first 3 vertices of the shape
     # correctly define a plane (not coincident, nor colinear)
     plane1 = Part.Plane(*[v.Point for v in shape1.Vertexes[0:3]])
     plane2 = Part.Plane(*[v.Point for v in shape2.Vertexes[0:3]])
@@ -471,7 +471,7 @@ def get_prj_unit_length_scale(ifcfile):
                 else:
                     print(
                         "Not known length unit found, "
-                        "set attibute length scale to 1.0"
+                        "set attribute length scale to 1.0"
                     )
                     print(u)
             else:

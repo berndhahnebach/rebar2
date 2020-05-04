@@ -238,7 +238,7 @@ archadd.ReinforcementIndividual(baserebar5, vertieces=[v1, v2, v3], name="Reinfo
 doc.recompute()
 
 # ************************************************************************************************
-# reinforcment cusotm with base rebar
+# reinforcment custom with base rebar
 # rebar placements calculated inside custom reinforcement object based on custom spacing
 import FreeCAD, Draft, archadd
 from FreeCAD import Vector as vec
@@ -268,7 +268,7 @@ importIFC.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
 
 
 # ************************************************************************************************
-# rebar importer which usees rebar2
+# rebar importer which uses rebar2
 import os, importIFCrebar
 path_to_importIFCrebar = importIFCrebar.__file__.rstrip(os.path.basename(importIFCrebar.__file__))
 importIFCrebar.open(path_to_importIFCrebar + "example_01_two_stirrups.ifc")
@@ -278,7 +278,7 @@ importIFCrebar.open(path_to_importIFCrebar + "example_04_vat.ifc")
 FreeCAD.ActiveDocument.recompute()
 
 
-# for debuging with reload of importer
+# for debugging with reload of importer
 import importIFCrebar
 import importlib
 importlib.reload(importIFCrebar)
@@ -288,6 +288,7 @@ FreeCAD.ActiveDocument.recompute()
 
 # flake8 archadd.py
 """
+codespell -q 2 -S *.ts  -L childs,vertexes *
 flake8 importIFCrebar.py
 flake8 archobjects/base_rebar.py
 flake8 archobjects/reinforcement_custom.py

@@ -82,7 +82,7 @@ class ReinforcementIndividual(ReinforcementGeneric):
         pl_list = []
         rot = FreeCAD.Rotation()
         for v in obj.Vertieces:
-            # Placment is not set for Part Vetex
+            # Placment is not set for Part Vertex
             # built placement out of the coordinates attributes
             vertex_vec = vec(v.X, v.Y, v.Z)
             # print(FreeCAD.Placement(vertex_vec, rot))

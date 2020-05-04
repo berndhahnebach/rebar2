@@ -225,7 +225,6 @@ class BaseRebar(ArchComponent.Component):
             length = getLengthOfRebar(obj)
             if length:
                 obj.Length = length
-        # somehow the rebar has no Length proterty ...
 
         circle = Part.makeCircle(obj.Diameter.Value / 2, bpoint, bvec)
         circle = Part.Wire(circle)

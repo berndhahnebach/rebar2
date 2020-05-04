@@ -194,7 +194,7 @@ class ReinforcementLinear(ReinforcementGeneric):
         # bang, crash
         # onChanged is called on any change even on
         # init of the obj after any prop
-        # check for prop existance of all needed props
+        # check for prop existence of all needed props
 
         # https://forum.freecadweb.org/viewtopic.php?f=22&t=37157
         # https://forum.freecadweb.org/viewtopic.php?f=22&t=39106
@@ -253,7 +253,7 @@ class ReinforcementLinear(ReinforcementGeneric):
             # con cover changed Amount is fixed, fix Distance, change Spacing
             # con cover changed Distance is fixed, fix Amount, change Spacing
             # con cover changed Spacing is fixed, fix Amount, change Distance
-            # work around, prind message
+            # work around, print message
             if prop == "OffsetStart" or prop == "OffsetEnd":
                 print("onChanged() not yet implemented")
 
