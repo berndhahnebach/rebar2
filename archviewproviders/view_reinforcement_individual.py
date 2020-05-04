@@ -33,9 +33,11 @@ class ViewProviderReinforcementIndividual(ViewProviderReinforcementGeneric):
     def getIcon(
         self
     ):
-        import Arch_rc
-        False if Arch_rc.__name__ else True  # dummy usage
-        return ":/icons/Arch_Equipment.svg"
+        from os.path import join
+        from os.path import split
+        icon_file = join(split(__file__)[0], "icons", "Reinforcement_individual.svg")
+        # print(icon_file)
+        return icon_file
 
     def claimChildren(
         self

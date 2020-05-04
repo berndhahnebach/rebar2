@@ -36,9 +36,11 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
     def getIcon(
         self
     ):
-        import Arch_rc
-        False if Arch_rc.__name__ else True  # dummy usage
-        return ":/icons/Arch_Pipe_Tree.svg"
+        from os.path import join
+        from os.path import split
+        icon_file = join(split(__file__)[0], "icons", "Rebar_base.svg")
+        # print(icon_file)
+        return icon_file
 
     def onDelete(self, feature, subelements):
         try:
