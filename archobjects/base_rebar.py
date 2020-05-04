@@ -125,6 +125,21 @@ class BaseRebar(ArchComponent.Component):
                     "The diameter of this rebar shape"
                 )
             )
+        # Rounding
+        if "Rounding" not in pl:
+            obj.addProperty(
+                "App::PropertyFloat",
+                "Rounding",
+                "Rebar",
+                QT_TRANSLATE_NOOP(
+                    "App::Property",
+                    (
+                        "The fillet to apply to the angle "
+                        "of the base profile. This value "
+                        "is multiplied by the bar diameter."
+                    )
+                )
+            )
         # MarkNumber
         if "MarkNumber" not in pl:
             obj.addProperty(
@@ -216,6 +231,12 @@ class BaseRebar(ArchComponent.Component):
         if not bpoint:
             return
         # all tests ok!
+
+        if hasattr(obj, "Rounding"):
+            if obj.Rounding:
+                radius = obj.Rounding * obj.Diameter.Value
+                from DraftGeomUtils import filletWire
+                wire = filletWire(wire, radius)
 
         # is length allong the rounding or not?
         # in the users head and in material bill without rounding

@@ -249,6 +249,15 @@ custom = "5@100+10@200+5@100"
 archadd.ReinforcementCustom(baserebar6, custom, name="Reinforcement_9")
 FreeCAD.ActiveDocument.recompute()
 
+# ************************************************************************************************
+# base rebar with rounding
+import FreeCAD, Draft, archadd
+from FreeCAD import Vector as vec
+wire7 = Draft.makeWire([vec(0, 0, 0), vec(0, -300, 0), vec(500, -300, 0), vec(500, 0, 0)])
+baserebar7 = archadd.BaseRebar(wire7, diameter=30, mark=7, name="BaseRebar_7")
+baserebar7.Rounding = 2
+FreeCAD.ActiveDocument.recompute()
+
 
 # ************************************************************************************************
 # ifc import *************************************************************************************
