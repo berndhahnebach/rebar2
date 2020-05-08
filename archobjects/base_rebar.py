@@ -23,13 +23,15 @@ __title__ = "FreeCAD base rebar object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
 import FreeCAD
 
 import ArchComponent
 import Part
 
-if FreeCAD.GuiUp:
-    from PySide.QtCore import QT_TRANSLATE_NOOP
+from ArchRebar import getLengthOfRebar
+from DraftGeomUtils import filletWire
 
 
 # ****************************************************************************
@@ -168,7 +170,7 @@ class BaseRebar(ArchComponent.Component):
         self,
         obj
     ):
-        ArchComponent.Component.onDocumentRestored(self, obj)
+        super(BaseRebar, self).onDocumentRestored(obj)
         self.setProperties(obj)
 
     def execute(
@@ -235,14 +237,12 @@ class BaseRebar(ArchComponent.Component):
         if hasattr(obj, "Rounding"):
             if obj.Rounding:
                 radius = obj.Rounding * obj.Diameter.Value
-                from DraftGeomUtils import filletWire
                 wire = filletWire(wire, radius)
 
         # is length allong the rounding or not?
         # in the users head and in material bill without rounding
         # but with sharp edges instead
         if hasattr(obj, "Length"):
-            from ArchRebar import getLengthOfRebar
             length = getLengthOfRebar(obj)
             if length:
                 obj.Length = length

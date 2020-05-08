@@ -23,12 +23,13 @@ __title__ = "FreeCAD reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
 import FreeCAD
 
-from . reinforcement_generic import ReinforcementGeneric
+import lattice2BaseFeature as lattice2BF
 
-if FreeCAD.GuiUp:
-    from PySide.QtCore import QT_TRANSLATE_NOOP
+from . reinforcement_generic import ReinforcementGeneric
 
 
 class ReinforcementLattice(ReinforcementGeneric):
@@ -83,15 +84,15 @@ class ReinforcementLattice(ReinforcementGeneric):
         self,
         obj
     ):
+
         if self.clone(obj):
             return
         if not obj.LatticePlacement:
             return
 
-        from lattice2BaseFeature import isObjectLattice as islattice
-        if islattice(obj.LatticePlacement) is True:
-            from lattice2BaseFeature import getPlacementsList as getpl
-            obj.RebarPlacements = getpl(obj.LatticePlacement)
+        if lattice2BF.isObjectLattice(obj.LatticePlacement) is True:
+            pls = lattice2BF.getPlacementsList(obj.LatticePlacement)
+            obj.RebarPlacements = pls
             self.build_shape(obj)
             obj.Amount = len(obj.RebarPlacements)
             obj.TotalLength = obj.Amount * obj.BaseRebar.Length

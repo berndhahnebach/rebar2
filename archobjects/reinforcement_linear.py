@@ -23,14 +23,13 @@ __title__ = "FreeCAD linear reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
 import FreeCAD
 
 import ArchComponent
 import DraftVecUtils
 from .reinforcement_generic import ReinforcementGeneric
-
-if FreeCAD.GuiUp:
-    from PySide.QtCore import QT_TRANSLATE_NOOP
 
 
 class ReinforcementLinear(ReinforcementGeneric):
@@ -187,7 +186,7 @@ class ReinforcementLinear(ReinforcementGeneric):
     ):
 
         # since we overwrite the method we need to explicit call it
-        ArchComponent.Component.onChanged(self, obj, prop)
+        super(ReinforcementLinear, self).onChanged(obj, prop)
 
         # before an attribute will be set check the value
         # if it will be set onChanged will be called attribute will be set ...
@@ -302,13 +301,8 @@ class ReinforcementLinear(ReinforcementGeneric):
 
     def execute(
         self,
-        obj  # why obj? self is the obj?
+        obj
     ):
-
-        # what should be used to access an attribute
-        # self.Attribute
-        # obj.Attribute
-        # same in onChanged()
 
         if self.clone(obj):
             return

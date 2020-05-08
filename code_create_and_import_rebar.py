@@ -23,6 +23,10 @@
 # TODO
 # put code in defs and use import to easily run the code
 # use for unit tests and documentation
+# see Draft unit test or Arch unit test
+
+# documentation of methods and class of all rebar2 objects
+# see ArchWall which uses Numpy style
 
 
 # ************************************************************************************************
@@ -209,7 +213,7 @@ FreeCAD.ActiveDocument.recompute()
 
 # ************************************************************************************************
 # reinforcment individual with base rebar
-# rebar placements calculated inside individual reinforcement object based on linked vertieces
+# rebar placements calculated inside individual reinforcement object based on linked vertices
 import FreeCAD, Draft, archadd
 from FreeCAD import Vector as vec
 wire5 = Draft.makeWire([vec(0, 0, 0), vec(0, 0, 500)])
@@ -217,24 +221,24 @@ baserebar5 = archadd.BaseRebar(wire5, diameter=14, mark=5, name="BaseRebar_5")
 doc = FreeCAD.ActiveDocument
 v1 = doc.addObject("Part::Vertex","Vertex1")
 v1.X = 300
-v1.Y = 150
+v1.Y = -5150
 v1.Z = 200
 v1.ViewObject.PointColor=(1.0,0.7,0.0,0.0)
 v1.ViewObject.PointSize=20
 v2 = doc.addObject("Part::Vertex","Vertex2")
 v2.X = 200
-v2.Y = 100
+v2.Y = -5100
 v2.Z = 50
 v2.ViewObject.PointColor=(1.0,0.7,0.0,0.0)
 v2.ViewObject.PointSize=20
 v3 = doc.addObject("Part::Vertex","Vertex3")
 v3.X = 400
-v3.Y = 250
+v3.Y = -5250
 v3.Z = 100
 v3.ViewObject.PointColor=(1.0,0.7,0.0,0.0)
 v3.ViewObject.PointSize=20
 doc.recompute()
-archadd.ReinforcementIndividual(baserebar5, vertieces=[v1, v2, v3], name="Reinforcement_8")
+archadd.ReinforcementIndividual(baserebar5, individuals=[v1, v2, v3], name="Reinforcement_8")
 doc.recompute()
 
 # ************************************************************************************************
@@ -246,7 +250,8 @@ wire6 = Draft.makeWire([vec(0, 0, 0), vec(0, 1000, 0)])
 baserebar6 = archadd.BaseRebar(wire6, diameter=30, mark=6, name="BaseRebar_6")
 FreeCAD.ActiveDocument.recompute()
 custom = "5@100+10@200+5@100"
-archadd.ReinforcementCustom(baserebar6, custom, name="Reinforcement_9")
+pl9 = FreeCAD.Placement(vec(0, -5000 ,0), FreeCAD.Rotation())
+archadd.ReinforcementCustom(baserebar6, custom, base_placement=pl9, name="Reinforcement_9")
 FreeCAD.ActiveDocument.recompute()
 
 # ************************************************************************************************

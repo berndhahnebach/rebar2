@@ -25,17 +25,17 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-from DraftTools import translate
+from draftutils.translate import translate
 
 
-def makeBaseRebar(
+def make_base_rebar(
     base,
     diameter=None,
     mark=None,
     name="BaseRebar"
 ):
     """
-    makeBaseRebar(base, [diameter, mark, name]):
+    make_base_rebar(base, [diameter, mark, name]):
     Adds a Reinforcement Bar object using the given base
     (sketch or wire) as sweep path.
     """
@@ -48,7 +48,7 @@ def makeBaseRebar(
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython", "Rebar")
     obj.Label = translate("Arch", name)
     # may be set the label to the mark number
-    # or even have an attribute which does it on any recompute
+    # or even have an attribute which does it on any obj recompute
 
     from archobjects.base_rebar import BaseRebar
     BaseRebar(obj)
@@ -68,5 +68,4 @@ def makeBaseRebar(
     else:
         obj.MarkNumber = 1
 
-    obj.Document.recompute()
     return obj

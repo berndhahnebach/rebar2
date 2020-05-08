@@ -23,6 +23,7 @@ __title__ = "FreeCAD custom reinforcement view object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+
 from .view_reinforcement_generic import ViewProviderReinforcementGeneric
 
 

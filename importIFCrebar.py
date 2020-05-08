@@ -408,7 +408,7 @@ def insert(filename, docname, skip=[], only=[], root=None):
         ):
             # individual reinforcement
             print("reinforcement: individual std")
-            vertieces = []
+            individuals = []
             for co in vec_base_rebar:
                 v_placement_lok = FreeCAD.Placement(co, FreeCAD.Rotation())
                 v_placement_glob = v_placement_lok.multiply(firstbar_pl)
@@ -417,10 +417,10 @@ def insert(filename, docname, skip=[], only=[], root=None):
                 v.X, v.Y, v.Z = v_vec.x, v_vec.y, v_vec.z,
                 v.ViewObject.PointColor = (1.0, 0.7, 0.0, 0.0)
                 v.ViewObject.PointSize = 15
-                vertieces.append(v)
+                individuals.append(v)
             archadd.ReinforcementIndividual(
                 rebar_shape,
-                vertieces=vertieces,
+                individuals=individuals,
                 base_placement=base_placement,
                 name="ReinforcementIndividual_"+str(pid)
             )

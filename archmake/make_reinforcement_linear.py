@@ -26,7 +26,7 @@ __url__ = "http://www.freecadweb.org"
 import FreeCAD
 from FreeCAD import Vector as vec
 
-from DraftTools import translate
+from draftutils.translate import translate
 
 # Does it makes sense to put OffsetEnd and OffsetStart in make too?
 # on ifc import they are 0, they will not be needed there
@@ -58,7 +58,7 @@ from DraftTools import translate
 #
 
 
-def makeReinforcementLinear(
+def make_reinforcement_linear(
     base_rebar,
     amount=None,
     spacing=None,
@@ -68,7 +68,7 @@ def makeReinforcementLinear(
     name="ReinforcementLinear"
 ):
     """
-    makeReinforcementLinear(
+    make_reinforcement_linear(
         base_rebar,
         [amount],
         [spacing],
@@ -118,7 +118,6 @@ def makeReinforcementLinear(
     obj.BaseRebar = base_rebar
     obj.BasePlacement = base_placement
     obj.Direction = direction
-    obj.Document.recompute()
 
     if distance is None:
         obj.FixedAttribut = "Amount"
@@ -135,11 +134,8 @@ def makeReinforcementLinear(
         obj.Distance = distance
         obj.Amount = amount
 
-    obj.Document.recompute()
-
-    # mark base_rebar obj for recompute to make it collect its new child
+    # mark base_rebar obj to make it collect its new child
     base_rebar.touch()
-    obj.Document.recompute()
     return obj
 
 

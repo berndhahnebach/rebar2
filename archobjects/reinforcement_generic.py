@@ -23,13 +23,12 @@ __title__ = "FreeCAD generic reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
 import FreeCAD
 
 import ArchComponent
 import Part
-
-if FreeCAD.GuiUp:
-    from PySide.QtCore import QT_TRANSLATE_NOOP
 
 
 class ReinforcementGeneric(ArchComponent.Component):
@@ -40,9 +39,8 @@ class ReinforcementGeneric(ArchComponent.Component):
     Information
     -----------
     Placement list with the placements of each rebar is calculated.
-    A compound from all rebars is created. The compound it the reinforcement.
-    TODO: Create a reinforcement class especially for point reinforcement.
-    A list of vertieces will be given and the reinforcement will be created.
+    A compound from all rebars is created.
+    The shape of the compound is the reinforcement.
 
     Who is child of who?
     --------------------
@@ -61,7 +59,7 @@ class ReinforcementGeneric(ArchComponent.Component):
     list or group or whatever with all base rebars. TODO find out.
 
     Module separation?
-    -----------------_
+    ------------------
     Should ReinforcementLattice in a separate module?
 
     Additional Attributes
@@ -195,8 +193,13 @@ class ReinforcementGeneric(ArchComponent.Component):
 
     def execute(
         self,
-        obj  # why obj? self is the obj?
+        obj
     ):
+        # self is the Proxy class,
+        # obj is tha actual object which uses the Proxy
+        # self.SomeAttribute == obj.Proxy.SomeAttribute
+        # to access the actual object obj should be used
+
         if self.clone(obj):
             return
         if not obj.BaseRebar:
@@ -214,29 +217,28 @@ class ReinforcementGeneric(ArchComponent.Component):
         # if reinforcement shape is not a null shape
         # TODO may be use another color for base rebar
         if FreeCAD.GuiUp:
-            if obj.Shape.isNull() is not True:
+            if not obj.Shape.isNull():
                 obj.BaseRebar.ViewObject.Visibility = False
 
     def build_shape(
         self,
         obj
     ):
-        from Part import Shape as sh
         """
         if obj has no attribute Shape
         a empty Shape can not be assigned :-)
         if not hasattr(obj, 'Shape'):
             print('{} has no Shape'.format(obj.Label))
-            obj.Shape = sh()
+            obj.Shape = Part.Shape()
             return
         """
         if hasattr(obj, "BaseRebar") and obj.BaseRebar is None:
             FreeCAD.Console.PrintMessage(
                 "BaseRebar property is not set for reinforcement: {}. "
-                "Shape the the reinforcement will be an empty shape.\n"
+                "Shape of the reinforcement will be an empty shape.\n"
                 .format(obj.Label)
             )
-            obj.Shape = sh()
+            obj.Shape = Part.Shape()
             return
 
         # build compound shape with base rebar

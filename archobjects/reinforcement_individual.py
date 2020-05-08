@@ -23,13 +23,12 @@ __title__ = "FreeCAD individual reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
 import FreeCAD
 from FreeCAD import Vector as vec
 
 from .reinforcement_generic import ReinforcementGeneric
-
-if FreeCAD.GuiUp:
-    from PySide.QtCore import QT_TRANSLATE_NOOP
 
 
 class ReinforcementIndividual(ReinforcementGeneric):
@@ -50,11 +49,12 @@ class ReinforcementIndividual(ReinforcementGeneric):
 
         # New properties
 
-        # linked vertieces
-        if "Vertieces" not in pl:
+        # Individuals
+        # linked placements, list of Vertices
+        if "Individuals" not in pl:
             obj.addProperty(
                 "App::PropertyLinkList",
-                "Vertieces",
+                "Individuals",
                 "ArrayOfRebars",
                 QT_TRANSLATE_NOOP(
                     "App::Property",
@@ -64,24 +64,19 @@ class ReinforcementIndividual(ReinforcementGeneric):
 
     def execute(
         self,
-        obj  # why obj? self is the obj?
+        obj
     ):
-
-        # what should be used to access an attribute
-        # self.Attribute
-        # obj.Attribute
-        # same in onChanged()
 
         if self.clone(obj):
             return
         if not obj.BaseRebar:
             return
-        if not obj.Vertieces:
+        if not obj.Individuals:
             return
 
         pl_list = []
         rot = FreeCAD.Rotation()
-        for v in obj.Vertieces:
+        for v in obj.Individuals:
             # Placment is not set for Part Vertex
             # built placement out of the coordinates attributes
             vertex_vec = vec(v.X, v.Y, v.Z)

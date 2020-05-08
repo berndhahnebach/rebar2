@@ -23,14 +23,16 @@ __title__ = "FreeCAD custom reinforcement object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+from PySide.QtCore import QT_TRANSLATE_NOOP
+
 import FreeCAD
 
 import ArchRebar
 import DraftVecUtils
-from .reinforcement_generic import ReinforcementGeneric
+from ArchRebar import CustomSpacingPlacement
+from ArchRebar import strprocessOfCustomSpacing
 
-if FreeCAD.GuiUp:
-    from PySide.QtCore import QT_TRANSLATE_NOOP
+from .reinforcement_generic import ReinforcementGeneric
 
 
 class ReinforcementCustom(ReinforcementGeneric):
@@ -133,22 +135,14 @@ class ReinforcementCustom(ReinforcementGeneric):
 
     def execute(
         self,
-        obj  # why obj? self is the obj?
+        obj
     ):
-
-        # what should be used to access an attribute
-        # self.Attribute
-        # obj.Attribute
-        # same in onChanged()
 
         if self.clone(obj):
             return
         if not obj.BaseRebar:
             return
         # should we check for more Attributes?
-
-        from ArchRebar import CustomSpacingPlacement
-        from ArchRebar import strprocessOfCustomSpacing
 
         if obj.CustomSpacing:
             spacinglist = strprocessOfCustomSpacing(obj.CustomSpacing)

@@ -25,19 +25,19 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-from DraftTools import translate
+from draftutils.translate import translate
 
 
-def makeReinforcementIndividual(
+def make_reinforcement_individual(
     base_rebar,
-    vertieces,
+    individuals,
     base_placement=FreeCAD.Placement(),
     name="ReinforcementIndividual"
 ):
     """
-    makeReinforcementIndividual(
+    make_reinforcement_individual(
         base_rebar,
-        vertieces,
+        individuals,
         [base_placement],
         [name]
     )
@@ -61,10 +61,9 @@ def makeReinforcementIndividual(
         v_individual.ViewProviderReinforcementIndividual(obj.ViewObject)
 
     obj.BaseRebar = base_rebar
-    obj.Vertieces = vertieces
+    obj.Individuals = individuals
     obj.BasePlacement = base_placement
 
-    # mark base_rebar obj for recompute to make it collect its new child
+    # mark base_rebar obj to make it collect its new child
     base_rebar.touch()
-    obj.Document.recompute()
     return obj

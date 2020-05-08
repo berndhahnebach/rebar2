@@ -26,12 +26,12 @@ __url__ = "http://www.freecadweb.org"
 import FreeCAD
 from FreeCAD import Vector as vec
 
-from DraftTools import translate
+from draftutils.translate import translate
 
 # see linear
 
 
-def makeReinforcementCustom(
+def make_reinforcement_custom(
     base_rebar,
     custom_spacing,
     direction=vec(0, 0, 1),
@@ -39,7 +39,7 @@ def makeReinforcementCustom(
     name="ReinforcementCustom"
 ):
     """
-    makeReinforcementCustom(
+    make_reinforcement_custom(
         base_rebar,
         customspacing,
         [base_placement],
@@ -68,9 +68,7 @@ def makeReinforcementCustom(
     obj.CustomSpacing = custom_spacing
     obj.BasePlacement = base_placement
     obj.Direction = direction
-    obj.Document.recompute()
 
-    # mark base_rebar obj for recompute to make it collect its new child
+    # mark base_rebar obj to make it collect its new child
     base_rebar.touch()
-    obj.Document.recompute()
     return obj

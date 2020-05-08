@@ -25,17 +25,17 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-from DraftTools import translate
+from draftutils.translate import translate
 
 
-def makeReinforcementLattice(
+def make_reinforcement_lattice(
     base_rebar,
     latice_obj,
     base_placement=FreeCAD.Placement(),
     name="ReinforcementLattice"
 ):
     """
-    makeReinforcementLattice(base_rebar, placements, [base_placement], [name])
+    make_reinforcement_lattice(base_rebar, placements, [base_placement], [name])
     Adds a lattice reinforcement object.
     """
     from lattice2BaseFeature import isObjectLattice as islattice
@@ -65,7 +65,6 @@ def makeReinforcementLattice(
     obj.LatticePlacement = latice_obj
     obj.BasePlacement = base_placement
 
-    # mark base_rebar obj for recompute to make it collect its new child
+    # mark base_rebar obj to make it collect its new child
     base_rebar.touch()
-    obj.Document.recompute()
     return obj

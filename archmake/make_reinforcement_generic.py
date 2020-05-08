@@ -25,17 +25,17 @@ __url__ = "http://www.freecadweb.org"
 
 import FreeCAD
 
-from DraftTools import translate
+from draftutils.translate import translate
 
 
-def makeReinforcementGeneric(
+def make_reinforcement_generic(
     base_rebar,
     placements=[],
     base_placement=FreeCAD.Placement(),
     name="ReinforcementGeneric"
 ):
     """
-    makeReinforcementGeneric(base_rebar, placements, [base_placement], [name])
+    make_reinforcement_generic(base_rebar, placements, [base_placement], [name])
     Adds a generic reinforcement object.
     """
     if not FreeCAD.ActiveDocument:
@@ -59,7 +59,7 @@ def makeReinforcementGeneric(
     obj.Amount = len(placements)
     obj.TotalLength = obj.Amount * base_rebar.Length
 
-    # mark base_rebar obj for recompute to make it collect its new child
+    # mark base_rebar obj to make it collect its new child
+    # TODO is touche really needed
     base_rebar.touch()
-    obj.Document.recompute()
     return obj
