@@ -33,9 +33,7 @@ from .view_rebar_generic import ViewProviderRebarCommon
 
 class ViewProviderBaseRebar(ViewProviderRebarCommon):
 
-    def getIcon(
-        self
-    ):
+    def getIcon(self):
         from os.path import join
         from os.path import split
         icon_file = join(split(__file__)[0], "icons", "Rebar_base.svg")
@@ -50,9 +48,7 @@ class ViewProviderBaseRebar(ViewProviderRebarCommon):
             FreeCAD.Console.PrintError("Error in onDelete: ")
         return True
 
-    def claimChildren(
-        self
-    ):
+    def claimChildren(self):
         # collect the children for TreeView
 
         # children from Arch.Component

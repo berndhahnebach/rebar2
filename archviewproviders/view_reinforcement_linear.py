@@ -28,9 +28,7 @@ from .view_reinforcement_generic import ViewProviderReinforcementGeneric
 
 class ViewProviderReinforcementLinear(ViewProviderReinforcementGeneric):
 
-    def getIcon(
-        self
-    ):
+    def getIcon(self):
         from os.path import join
         from os.path import split
         icon_file = join(split(__file__)[0], "icons", "Reinforcement_linear.svg")

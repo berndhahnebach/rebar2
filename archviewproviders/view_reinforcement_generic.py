@@ -30,9 +30,7 @@ from .view_rebar_generic import ViewProviderRebarCommon
 
 class ViewProviderReinforcementGeneric(ViewProviderRebarCommon):
 
-    def getIcon(
-        self
-    ):
+    def getIcon(self):
         from os.path import join
         from os.path import split
         icon_file = join(split(__file__)[0], "icons", "Reinforcement_generic.svg")

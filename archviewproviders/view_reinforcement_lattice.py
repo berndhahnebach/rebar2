@@ -30,18 +30,14 @@ from .view_reinforcement_generic import ViewProviderReinforcementGeneric
 
 class ViewProviderReinforcementLattice(ViewProviderReinforcementGeneric):
 
-    def getIcon(
-        self
-    ):
+    def getIcon(self):
         from os.path import join
         from os.path import split
         icon_file = join(split(__file__)[0], "icons", "Reinforcement_lattice.svg")
         # print(icon_file)
         return icon_file
 
-    def claimChildren(
-        self
-    ):
+    def claimChildren(self):
         # collect the children for TreeView
 
         # children from Arch.Component

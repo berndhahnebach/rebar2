@@ -304,6 +304,7 @@ FreeCAD.ActiveDocument.recompute()
 """
 codespell -q 2 -S *.ts  -L childs,vertexes *
 flake8 importIFCrebar.py
+
 flake8 archobjects/base_rebar.py
 flake8 archobjects/reinforcement_custom.py
 flake8 archobjects/reinforcement_generic.py
@@ -323,6 +324,5 @@ flake8 archmake/make_reinforcement_generic.py
 flake8 archmake/make_reinforcement_lattice.py
 flake8 archmake/make_reinforcement_linear.py
 flake8 archmake/make_reinforcement_individual.py
-
 
 """

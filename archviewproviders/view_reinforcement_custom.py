@@ -23,15 +23,12 @@ __title__ = "FreeCAD custom reinforcement view object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-
 from .view_reinforcement_generic import ViewProviderReinforcementGeneric
 
 
 class ViewProviderReinforcementCustom(ViewProviderReinforcementGeneric):
 
-    def getIcon(
-        self
-    ):
+    def getIcon(self):
         from os.path import join
         from os.path import split
         icon_file = join(split(__file__)[0], "icons", "Reinforcement_custom.svg")
